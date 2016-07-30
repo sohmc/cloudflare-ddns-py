@@ -2,15 +2,15 @@ import json
 import requests
 import os.path
 
+
+cf_config = {"email":     "",
+             "api_key":   "",
+             "zone_name": "",
+             "subdomain": ""}
+
 # Configuration goes here
-cf_api_token = ''
-cf_email = ''
+cf_config_file = '~/.config/.cf_ddns.conf'
 
-# zone name that contains your subdomain A RECORD (e.g. example.com, wikipedia.org, etc.)
-cf_zone = 'example.com'
-
-# subdomain that you are updating
-cf_sub = 'homenetwork'
 
 
 # Do NOT append an ending slash here!
@@ -25,11 +25,6 @@ def config():
     print "Keep in mind that this information is not validated"
     print "or checked for accuracy prior to running."
     print ""
-
-    cf_config = {"email":     "",
-                 "api_key":   "",
-                 "zone_name": "",
-                 "subdomain": ""}
 
     while (cf_config['email'] == ""):
         print "Please type in the e-mail address associated with CloudFlare: "
@@ -62,12 +57,30 @@ def config():
 
 
 def get_zone_id(zone_name):
-    data = {'X-Auth-Email': cf_email, 
-            'X-Auth-Key': cf_api_token,
-            'Content-Type': 'application/json'}
+    r_headers = {'X-Auth-Email': cf_config['email'], 
+                 'X-Auth-Key': cf_config['api_token'],
+                 'Content-Type': 'application/json'}
 
-    r = requests.get(cf_api_url + '/zones', headers=data)
-    print r.url
-    print json.dumps(r.json(), indent=4, sort_keys=True)
+    r_data = {'name': 'example.com',
+              'status': 'active'}
 
+    r = requests.get(cf_api_url + '/zones', headers=r_headers, data=r_data)
+    cf_response = r.json()
+
+    ret_val = None
+    if ((cf_response['success'] == True) and
+            (cf_response['result'][0]['name'] == zone_name)):
+        ret_val = cf_config['zone_id'] = cf_response['result'][0]['id']
+    elif (len(cf_response['errors']) > 0):
+        print "CloudFlare returned error(s): "
+        print cf_response['errors']
+    elif (cf_response['result_info']['count'] == 0):
+        print "CloudFlare returned no results."
+    
+    #print json.dumps(cf_response['result'][0], indent=4, sort_keys=True)
+    return ret_val
+
+
+# =-=-=-=-=-=-=-=-=-=- MAIN -=-=-=-=-=-=-=-=-=-= #
+cf_config['zone_id'] = get_zone_id('mikesoh.com')
 

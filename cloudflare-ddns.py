@@ -5,7 +5,7 @@ import os.path
 
 cf_config = {"email":     "",
              "api_key":   "",
-             "zone_name": "",
+             "zone":      "",
              "subdomain": ""}
 
 # Configuration goes here
@@ -61,16 +61,16 @@ def get_zone_id(zone_name):
                  'X-Auth-Key': cf_config['api_token'],
                  'Content-Type': 'application/json'}
 
-    r_data = {'name': 'example.com',
+    r_data = {'name': zone_name,
               'status': 'active'}
 
-    r = requests.get(cf_api_url + '/zones', headers=r_headers, data=r_data)
+    r = requests.get(cf_api_url + '/zones', headers=r_headers, params=r_data)
     cf_response = r.json()
 
     ret_val = None
     if ((cf_response['success'] == True) and
             (cf_response['result'][0]['name'] == zone_name)):
-        ret_val = cf_config['zone_id'] = cf_response['result'][0]['id']
+        ret_val = cf_response['result'][0]['id']
     elif (len(cf_response['errors']) > 0):
         print "CloudFlare returned error(s): "
         print cf_response['errors']
@@ -81,6 +81,31 @@ def get_zone_id(zone_name):
     return ret_val
 
 
-# =-=-=-=-=-=-=-=-=-=- MAIN -=-=-=-=-=-=-=-=-=-= #
-cf_config['zone_id'] = get_zone_id('mikesoh.com')
+def get_subdomain_id(subdomain):
+    r_headers = {'X-Auth-Email': cf_config['email'], 
+                 'X-Auth-Key': cf_config['api_token'],
+                 'Content-Type': 'application/json'}
 
+    fqsubdomain = subdomain + '.' + cf_config['zone']
+    r_data = {'name': fqsubdomain,
+              'type': 'A'}
+
+    r = requests.get(cf_api_url + '/zones/' + cf_config['zone_id'] +
+            '/dns_records', headers=r_headers, params=r_data)
+    cf_response = r.json()
+
+    ret_val = None
+    if ((cf_response['success'] == True) and
+            (cf_response['result'][0]['name'] == fqsubdomain)):
+        ret_val = cf_response['result'][0]['id']
+    elif (len(cf_response['errors']) > 0):
+        print "CloudFlare returned error(s): "
+        print cf_response['errors']
+    elif (cf_response['result_info']['count'] == 0):
+        print "CloudFlare returned no results."
+
+# =-=-=-=-=-=-=-=-=-=- MAIN -=-=-=-=-=-=-=-=-=-= #
+cf_config['zone_id']   = get_zone_id(cf_config['zone'])
+cf_config['domain_id'] = get_subdomain_id(cf_config['subdomain'])
+
+print cf_config

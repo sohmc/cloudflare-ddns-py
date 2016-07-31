@@ -70,7 +70,7 @@ def get_zone_id(zone_name):
     ret_val = None
     if ((cf_response['success'] == True) and
             (cf_response['result'][0]['name'] == zone_name)):
-        cf_config['zone_id'] = cf_response['result'][0]['id']
+        cf_config['zone_id'] = str(cf_response['result'][0]['id'])
     elif (len(cf_response['errors']) > 0):
         print "CloudFlare returned error(s): "
         print cf_response['errors']
@@ -96,8 +96,8 @@ def get_subdomain_id(subdomain):
 
     if ((cf_response['success'] == True) and
             (cf_response['result'][0]['name'] == fqsubdomain)):
-        cf_config['domain_id'] = cf_response['result'][0]['id']
-        cf_config['domain_record'] = cf_response['result'][0]['content']
+        cf_config['domain_id'] = str(cf_response['result'][0]['id'])
+        cf_config['domain_record'] = str(cf_response['result'][0]['content'])
     elif (len(cf_response['errors']) > 0):
         print "CloudFlare returned error(s): "
         print cf_response['errors']
@@ -105,13 +105,43 @@ def get_subdomain_id(subdomain):
         print "CloudFlare returned no results."
 
 
+def update_cf_record():
+    r_headers = {'X-Auth-Email': cf_config['email'], 
+                 'X-Auth-Key': cf_config['api_token'],
+                 'Content-Type': 'application/json'}
+
+    fqsubdomain = cf_config['subdomain'] + '.' + cf_config['zone']
+    r_data = {'id': cf_config['domain_id'],
+              'content': cf_config['current_dyip'],
+              'name': fqsubdomain,
+              'type': 'A'}
+    
+    r = requests.put(cf_api_url + '/zones/' + cf_config['zone_id'] +
+            '/dns_records/' + cf_config['domain_id'], headers=r_headers,
+            data=json.dumps(r_data))
+    cf_response = r.json()
+
+
+    if ((cf_response['success'] == True) and
+            (cf_response['result'][0]['id'] == cf_config['domain_id'])):
+        return True
+    elif (len(cf_response['errors']) > 0):
+        print "CloudFlare returned error(s): "
+        print cf_response['errors']
+    elif (cf_response['result_info']['count'] == 0):
+        print "CloudFlare returned no results."
+
+    return False
+
+
 def get_current_dyip():
     r_params = {'format': 'json'}
     r = requests.get('http://api.ipify.org', params=r_params)
-    cf_config['current_dyip'] = r.json()['ip']
+    cf_config['current_dyip'] = str(r.json()['ip'])
 
-    print 'Got public IP address: ' + cf_config['current_dyip']
     
+
+
 
 # =-=-=-=-=-=-=-=-=-=- MAIN -=-=-=-=-=-=-=-=-=-= #
 get_zone_id(cf_config['zone'])
@@ -124,3 +154,6 @@ if (cf_config['current_dyip'] == cf_config['domain_record']):
 else :
     print "CloudFlare record:  " + cf_config['domain_record']
     print "Current dynamic IP: " + cf_config['current_dyip']
+
+    if (update_cf_record() == True):
+        print "CloudFlare record updated."

@@ -1,6 +1,18 @@
+"""
+cloudflare-ddns.py -- Update your dynamic IP address automatically using
+                      CloudFlare's latest API version 4.0
+Version 0.1
+
+Written by Michael Soh
+Licensed via GPL 3.0
+https://github.com/sohmc/cloudflare-ddns-py
+"""
+
 import json
 import requests
 import os.path
+import sys
+import getopt
 
 
 cf_config = {"email":     "",
@@ -144,6 +156,35 @@ def get_current_dyip():
 
 
 # =-=-=-=-=-=-=-=-=-=- MAIN -=-=-=-=-=-=-=-=-=-= #
+
+if (len(sys.argv) > 1):
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "fc:")
+    except getopt.GetoptError:
+        print_usage()
+
+    for o, a in opts:
+        if (o == '-c'):
+            config()
+        elif (o == '-f'):
+            force_update = True
+        else:
+            print_usage()
+
+
+
+# read the configuration
+if (os.path.isfile(cf_config_file)):
+    with open(cf_config_file) as datafile:
+        cf_config = json.load(datafile)
+
+if ((not cf_config['email']) 
+        or (not cf_config['api_key']) 
+        or (not cf_config['zone']) 
+        or (not cf_config['subdomain'])):
+    print 'Not configured properly.'
+    exit();
+
 get_zone_id(cf_config['zone'])
 get_subdomain_id(cf_config['subdomain'])
 get_current_dyip()

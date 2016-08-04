@@ -1,5 +1,7 @@
 # cloudflare-ddns-py
 
+**Current Version: 0.2 (Released 2016-08Aug-04)**
+
 Got a [CloudFlare](https://www.cloudflare.com)-managed domain that you
 want to update with your dynamically changing IP address?
 
@@ -12,7 +14,8 @@ uses API 1.0, which [CloudFlare is retiring on November 9th,
 ## Requirements
 
 In order to run this script, you'll need:
-* Python 2.7.x (This script was developed on 2.7.6)
+* Python 2.7.x (This script was developed on 2.7.6 and no guarentees
+  that it works with Python 3.x)
 * [`requests` library](http://docs.python-requests.org/en/master/), installable using `pip`
 
 In order to make use of this script, you will also need to obtain a
@@ -20,6 +23,21 @@ CloudFlare API key.  This is obtained by logging into CloudFlare and
 then clicking "[My Settings](https://www.cloudflare.com/a/account/my-account)", 
 which is located under the User menu on the top right corner of the 
 page.
+
+
+## Usage
+```
+usage: cloudflare-ddns.py [-f] [-c <config_file>]
+
+-f                   Force IP address update, even if the record is the same
+                     as the current IP address.
+
+-c <config_file>     Run using the config file, if provided.  If the config
+                     file is empty or does not exist, the config will run 
+                     and save values in the specified file.  The script will
+                     run without arguments when the config file is found 
+                     at ~/.config/.cf_ddns.conf
+```
 
 
 ## License
@@ -34,4 +52,4 @@ explictly offered.
 ## Pull Requests
 
 Pull requests are encouraged onto the `staging` branch.  The `master`
-branch is reserved for releases, except the initial commits.
+branch is reserved for releases.

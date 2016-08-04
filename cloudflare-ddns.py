@@ -24,7 +24,6 @@ cf_config_file = os.path.expanduser('~/.config/.cf_ddns.conf')
 #cf_config['email']     = 'me@example.com'
 #cf_config['zone']      = 'example.com'
 #cf_config['subdomain'] = 'foobar
-# DO NOT COMMIT ANYTHING ABOVE THIS LINE --^
 
 
 # Do NOT append an ending slash here!
@@ -83,7 +82,6 @@ def config():
 
     with open(cf_config_file, 'w') as outfile:
         json.dump(cf_config, outfile, sort_keys=True, indent=2)
-
 
 
 def get_zone_id(zone_name):
@@ -151,9 +149,7 @@ def update_cf_record():
             data=json.dumps(r_data))
     cf_response = r.json()
 
-
-    if ((cf_response['success'] == True) and
-            (cf_response['result'][0]['id'] == cf_config['domain_id'])):
+    if ((cf_response['success'] == True) and (cf_response['result']['id'] == cf_config['domain_id'])):
         return True
     elif (len(cf_response['errors']) > 0):
         print "CloudFlare returned error(s): "
@@ -169,7 +165,13 @@ def get_current_dyip():
     r = requests.get('http://api.ipify.org', params=r_params)
     cf_config['current_dyip'] = str(r.json()['ip'])
 
-    
+
+def update():
+    print "CloudFlare record:  " + cf_config['domain_record']
+    print "Current dynamic IP: " + cf_config['current_dyip']
+
+    if (update_cf_record() == True):
+        print "CloudFlare record updated."
 
 
 
@@ -218,10 +220,10 @@ get_current_dyip()
 
 if (cf_config['current_dyip'] == cf_config['domain_record']):
     print "CloudFlare record matches current dynamic IP address."
-    print "Exiting with no further action."
-else :
-    print "CloudFlare record:  " + cf_config['domain_record']
-    print "Current dynamic IP: " + cf_config['current_dyip']
-
-    if (update_cf_record() == True):
-        print "CloudFlare record updated."
+    if (force_update): 
+        print "-f flag received!  Forcing update."
+        update()
+    else:
+        print "Exiting with no further action."
+else:
+    update()

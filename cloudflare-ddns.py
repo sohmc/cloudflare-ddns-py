@@ -84,15 +84,19 @@ def config():
         json.dump(cf_config, outfile, sort_keys=True, indent=2)
 
 
-def get_zone_id(zone_name):
-    r_headers = {'X-Auth-Email': cf_config['email'], 
-                 'X-Auth-Key': cf_config['api_key'],
-                 'Content-Type': 'application/json'}
+def cf_headers():
+    cf_headers = {'X-Auth-Email': cf_config['email'], 
+                  'X-Auth-Key': cf_config['api_key'],
+                  'Content-Type': 'application/json'}
 
+    return cf_headers
+
+
+def get_zone_id(zone_name):
     r_data = {'name': zone_name,
               'status': 'active'}
 
-    r = requests.get(cf_api_url + '/zones', headers=r_headers, params=r_data)
+    r = requests.get(cf_api_url + '/zones', headers=cf_headers(), params=r_data)
     cf_response = r.json()
 
     ret_val = None
@@ -110,16 +114,12 @@ def get_zone_id(zone_name):
 
 
 def get_subdomain_id(subdomain):
-    r_headers = {'X-Auth-Email': cf_config['email'], 
-                 'X-Auth-Key': cf_config['api_key'],
-                 'Content-Type': 'application/json'}
-
     fqsubdomain = subdomain + '.' + cf_config['zone']
     r_data = {'name': fqsubdomain,
               'type': 'A'}
 
     r = requests.get(cf_api_url + '/zones/' + cf_config['zone_id'] +
-            '/dns_records', headers=r_headers, params=r_data)
+            '/dns_records', headers=cf_headers(), params=r_data)
     cf_response = r.json()
 
     if ((cf_response['success'] == True) and
@@ -134,10 +134,6 @@ def get_subdomain_id(subdomain):
 
 
 def update_cf_record():
-    r_headers = {'X-Auth-Email': cf_config['email'], 
-                 'X-Auth-Key': cf_config['api_key'],
-                 'Content-Type': 'application/json'}
-
     fqsubdomain = cf_config['subdomain'] + '.' + cf_config['zone']
     r_data = {'id': cf_config['domain_id'],
               'content': cf_config['current_dyip'],
@@ -145,8 +141,8 @@ def update_cf_record():
               'type': 'A'}
     
     r = requests.put(cf_api_url + '/zones/' + cf_config['zone_id'] +
-            '/dns_records/' + cf_config['domain_id'], headers=r_headers,
-            data=json.dumps(r_data))
+            '/dns_records/' + cf_config['domain_id'],
+            headers=cf_headers(), data=json.dumps(r_data))
     cf_response = r.json()
 
     if ((cf_response['success'] == True) and (cf_response['result']['id'] == cf_config['domain_id'])):
@@ -195,7 +191,7 @@ if (len(sys.argv) > 1):
 
 
 # read the configuration or force config if config file is empty
-if (os.path.isfile(cf_config_file) or (run_config)):
+if (os.path.isfile(cf_config_file) or (run_config == True)):
     try:
         with open(cf_config_file) as datafile:
             cf_config = json.load(datafile)
@@ -207,9 +203,11 @@ if ((not 'email' in cf_config)
     or (not 'api_key' in cf_config) 
     or (not 'zone' in cf_config) 
     or (not 'subdomain' in cf_config)):
-        print "There was a problem parsing the config file:"
+        print "There was a problem parsing your configuration.  Please ensure that you"
+        print "have either populated the configuration variables directly into this "
+        print "script or your config file is in a readable and accessible location."
+        print "This script is looking in the following file: "
         print "     " + cf_config_file
-        print cf_config
         exit(3)
 
 

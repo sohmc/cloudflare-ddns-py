@@ -1,6 +1,6 @@
 # cloudflare-ddns-py
 
-**Current Version: 0.2 (Released DATE)**
+**Current Version: 0.2 (Released 2016-08Aug-04)**
 
 Got a [CloudFlare](https://www.cloudflare.com)-managed domain that you
 want to update with your dynamically changing IP address?

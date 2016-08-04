@@ -1,7 +1,7 @@
 """
 cloudflare-ddns.py -- Update your dynamic IP address automatically using
                       CloudFlare's latest API version 4.0
-Version 0.1
+Version 0.2
 
 Written by Michael Soh
 Licensed via GPL 3.0

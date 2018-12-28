@@ -13,10 +13,14 @@ import requests
 import os.path
 import sys
 import getopt
+import logging
 
 
 # Configuration goes here
 cf_config_file = os.path.expanduser('~/.config/.cf_ddns.conf')
+logging.debug('Expanding config file: ' + cf_config_file)
+
+cf_config = dict()
 
 # If you do not want to use a config file, you may manually
 # set the configuration here.  Uncomment the following lines
@@ -25,11 +29,15 @@ cf_config_file = os.path.expanduser('~/.config/.cf_ddns.conf')
 #cf_config['zone']      = 'example.com'
 #cf_config['subdomain'] = 'foobar
 
+if ('api_token' in cf_config):
+    logging.info('Configuration set within the script.')
+    logging.debug(cf_config);
 
 # Do NOT append an ending slash here!
 cf_api_url = 'https://api.cloudflare.com/client/v4'
+logging.debug('API URL set: ' + cf_api_url);
 
-cf_config = dict()
+# Default flags
 force_update = False
 run_config = False
 

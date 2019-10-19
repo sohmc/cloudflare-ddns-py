@@ -17,8 +17,10 @@ import logging
 
 
 # Configuration goes here
+logging.basicConfig(format='%(asctime)s %(process)d %(levelname)s %(message)s',
+        level=logging.DEBUG)
 cf_config_file = os.path.expanduser('~/.config/.cf_ddns.conf')
-logging.debug('Expanding config file: ' + cf_config_file)
+logging.debug('Expanding config file: %s', cf_config_file)
 
 cf_config = dict()
 
@@ -35,7 +37,7 @@ if ('api_token' in cf_config):
 
 # Do NOT append an ending slash here!
 cf_api_url = 'https://api.cloudflare.com/client/v4'
-logging.debug('API URL set: ' + cf_api_url);
+logging.debug('API URL set: %s ', cf_api_url);
 
 # Default flags
 force_update = False
@@ -88,6 +90,7 @@ def config():
     cf_config['subdomain'] = raw_input("> ")
     print ""
 
+    logging.debug('Writing configuration into outfile %s', outfile);
     with open(cf_config_file, 'w') as outfile:
         json.dump(cf_config, outfile, sort_keys=True, indent=2)
 
@@ -97,14 +100,19 @@ def cf_headers():
                   'X-Auth-Key': cf_config['api_key'],
                   'Content-Type': 'application/json'}
 
+    logging.debug('Setting CloudFlare headers: %s', cf_headers)
     return cf_headers
 
 
 def get_zone_id(zone_name):
     r_data = {'name': zone_name,
               'status': 'active'}
+    request_url = cf_api_url + '/zones';
 
-    r = requests.get(cf_api_url + '/zones', headers=cf_headers(), params=r_data)
+    logging.debug('REQUEST GET: %s', request_url)
+    logging.debug('r_data being')
+
+    r = requests.get(request_url, headers=cf_headers(), params=r_data)
     cf_response = r.json()
 
     ret_val = None

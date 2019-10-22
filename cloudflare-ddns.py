@@ -1,7 +1,7 @@
 """
 cloudflare-ddns.py -- Update your dynamic IP address automatically using
                       CloudFlare's latest API version 4.0
-Version 0.2
+Version 1.0
 
 Written by Michael Soh
 Licensed via GPL 3.0
@@ -13,10 +13,16 @@ import requests
 import os.path
 import sys
 import getopt
+import logging
 
 
 # Configuration goes here
+logging.basicConfig(format='%(asctime)s %(process)d %(levelname)s %(message)s',
+        level=logging.DEBUG)
 cf_config_file = os.path.expanduser('~/.config/.cf_ddns.conf')
+logging.debug('Expanding config file: %s', cf_config_file)
+
+cf_config = dict()
 
 # If you do not want to use a config file, you may manually
 # set the configuration here.  Uncomment the following lines
@@ -25,18 +31,22 @@ cf_config_file = os.path.expanduser('~/.config/.cf_ddns.conf')
 #cf_config['zone']      = 'example.com'
 #cf_config['subdomain'] = 'foobar
 
+if ('api_token' in cf_config):
+    logging.info('Configuration set within the script.')
+    logging.debug(cf_config);
 
 # Do NOT append an ending slash here!
 cf_api_url = 'https://api.cloudflare.com/client/v4'
+logging.debug('API URL set: %s ', cf_api_url);
 
-cf_config = dict()
+# Default flags
 force_update = False
 run_config = False
 
 
 def print_usage():
-    print "usage: " + sys.argv[0] + " [-f] [-c <config_file>]"
-    print """
+    print("usage: " + sys.argv[0] + " [-f] [-c <config_file>]")
+    print("""
 -f                   Force IP address update, even if the record is the same
                      as the current IP address.
 
@@ -44,42 +54,43 @@ def print_usage():
                      file is empty or does not exist, the config will run 
                      and save values in the specified file.  The script will
                      run without arguments when the config file is found 
-                     at """ + cf_config_file
+                     at """ + cf_config_file)
     sys.exit(2)
 
 
 def config():
-    print "The information provided to this configuration "
-    print "is used to obtain information about your domain "
-    print "and update the specified records accordingly."
-    print ""
-    print "Keep in mind that this information is not validated"
-    print "or checked for accuracy prior to running."
-    print ""
+    print("The information provided to this configuration ")
+    print("is used to obtain information about your domain ")
+    print("and update the specified records accordingly.")
+    print("")
+    print("Keep in mind that this information is not validated")
+    print("or checked for accuracy prior to running.")
+    print("")
 
-    print "Please type in the e-mail address associated with CloudFlare: "
-    cf_config['email'] = raw_input("> ")
-    print ""
+    print("Please type in the e-mail address associated with CloudFlare: ")
+    cf_config['email'] = input("> ")
+    print("")
 
-    print "This application only supports GLOBAL API keys."
-    print "User Service keys are an enterprise feature and this"
-    print "developer is a freeloader and can't test it."
-    print "Please copy and paste your GLOBAL API KEY:"
-    cf_config['api_key'] = raw_input("> ")
-    print ""
+    print("This application only supports GLOBAL API keys.")
+    print("User Service keys are an enterprise feature and this")
+    print("developer is a freeloader and can't test it.")
+    print("Please copy and paste your GLOBAL API KEY:")
+    cf_config['api_key'] = input("> ")
+    print("")
 
-    print "Type the zone name, or domain name, you are accessing."
-    print "For foobar.example.com, type here \"example.com\", without"
-    print "quotes."
-    cf_config['zone'] = raw_input("> ")
-    print ""
+    print("Type the zone name, or domain name, you are accessing.")
+    print("For foobar.example.com, type here \"example.com\", without")
+    print("quotes.")
+    cf_config['zone'] = input("> ")
+    print("")
 
-    print "Type the subdomain record you wnat to update."
-    print "For foobar.example.com, type here \"foobar\", without"
-    print "quotes."
-    cf_config['subdomain'] = raw_input("> ")
-    print ""
+    print("Type the subdomain record you wnat to update.")
+    print("For foobar.example.com, type here \"foobar\", without")
+    print("quotes.")
+    cf_config['subdomain'] = input("> ")
+    print("")
 
+    logging.debug('Writing configuration into outfile %s', outfile);
     with open(cf_config_file, 'w') as outfile:
         json.dump(cf_config, outfile, sort_keys=True, indent=2)
 
@@ -89,14 +100,19 @@ def cf_headers():
                   'X-Auth-Key': cf_config['api_key'],
                   'Content-Type': 'application/json'}
 
+    logging.debug('Setting CloudFlare headers: %s', cf_headers)
     return cf_headers
 
 
 def get_zone_id(zone_name):
     r_data = {'name': zone_name,
               'status': 'active'}
+    request_url = cf_api_url + '/zones';
 
-    r = requests.get(cf_api_url + '/zones', headers=cf_headers(), params=r_data)
+    logging.debug('REQUEST GET: %s', request_url)
+    logging.debug('r_data being')
+
+    r = requests.get(request_url, headers=cf_headers(), params=r_data)
     cf_response = r.json()
 
     ret_val = None
@@ -104,10 +120,10 @@ def get_zone_id(zone_name):
             (cf_response['result'][0]['name'] == zone_name)):
         cf_config['zone_id'] = str(cf_response['result'][0]['id'])
     elif (len(cf_response['errors']) > 0):
-        print "CloudFlare returned error(s): "
-        print cf_response['errors']
+        print("CloudFlare returned error(s): ")
+        print(cf_response['errors'])
     elif (cf_response['result_info']['count'] == 0):
-        print "CloudFlare returned no results."
+        print("CloudFlare returned no results.")
     
     #print json.dumps(cf_response['result'][0], indent=4, sort_keys=True)
     return ret_val
@@ -127,10 +143,10 @@ def get_subdomain_id(subdomain):
         cf_config['domain_id'] = str(cf_response['result'][0]['id'])
         cf_config['domain_record'] = str(cf_response['result'][0]['content'])
     elif (len(cf_response['errors']) > 0):
-        print "CloudFlare returned error(s): "
-        print cf_response['errors']
+        print("CloudFlare returned error(s): ")
+        print(cf_response['errors'])
     elif (cf_response['result_info']['count'] == 0):
-        print "CloudFlare returned no results."
+        print("CloudFlare returned no results.")
 
 
 def update_cf_record():
@@ -148,10 +164,10 @@ def update_cf_record():
     if ((cf_response['success'] == True) and (cf_response['result']['id'] == cf_config['domain_id'])):
         return True
     elif (len(cf_response['errors']) > 0):
-        print "CloudFlare returned error(s): "
-        print cf_response['errors']
+        print("CloudFlare returned error(s): ")
+        print(cf_response['errors'])
     elif (cf_response['result_info']['count'] == 0):
-        print "CloudFlare returned no results."
+        print("CloudFlare returned no results.")
 
     return False
 
@@ -163,11 +179,11 @@ def get_current_dyip():
 
 
 def update():
-    print "CloudFlare record:  " + cf_config['domain_record']
-    print "Current dynamic IP: " + cf_config['current_dyip']
+    print("CloudFlare record:  " + cf_config['domain_record'])
+    print("Current dynamic IP: " + cf_config['current_dyip'])
 
     if (update_cf_record() == True):
-        print "CloudFlare record updated."
+        print("CloudFlare record updated.")
 
 
 
@@ -203,11 +219,11 @@ if ((not 'email' in cf_config)
     or (not 'api_key' in cf_config) 
     or (not 'zone' in cf_config) 
     or (not 'subdomain' in cf_config)):
-        print "There was a problem parsing your configuration.  Please ensure that you"
-        print "have either populated the configuration variables directly into this "
-        print "script or your config file is in a readable and accessible location."
-        print "This script is looking in the following file: "
-        print "     " + cf_config_file
+        print("There was a problem parsing your configuration.  Please ensure that you")
+        print("have either populated the configuration variables directly into this ")
+        print("script or your config file is in a readable and accessible location.")
+        print("This script is looking in the following file: ")
+        print("     " + cf_config_file)
         exit(3)
 
 
@@ -217,11 +233,11 @@ get_subdomain_id(cf_config['subdomain'])
 get_current_dyip()
 
 if (cf_config['current_dyip'] == cf_config['domain_record']):
-    print "CloudFlare record matches current dynamic IP address."
+    print("CloudFlare record matches current dynamic IP address.")
     if (force_update): 
-        print "-f flag received!  Forcing update."
+        print("-f flag received!  Forcing update.")
         update()
     else:
-        print "Exiting with no further action."
+        print("Exiting with no further action.")
 else:
     update()

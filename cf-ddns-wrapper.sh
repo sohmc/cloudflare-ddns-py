@@ -1,7 +1,7 @@
 #!/bin/sh
 # Dynamic IP Updater for Cloudflare Domains
 # Wrapper Script
-# Version 0.2
+# Version 1.0
 # Licensed via GPL v3
 # 
 #

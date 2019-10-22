@@ -14,8 +14,8 @@ uses API 1.0, which [CloudFlare is retiring on November 9th,
 ## Requirements
 
 In order to run this script, you'll need:
-* Python 2.7.x (This script was developed on 2.7.6 and no guarentees
-  that it works with Python 3.x)
+* Python 3 (This script was developed using Python 3.6.8.  It _should_
+  work with newer versions of Python 3, but there is no guarentee.)
 * [`requests` library](http://docs.python-requests.org/en/master/), installable using `pip`
 
 In order to make use of this script, you will also need to obtain a

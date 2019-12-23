@@ -1,9 +1,9 @@
 language: python
 python:
-  - "3.8"
+  - "3.6"
 
 before_script:
   - bash .travis/create_template.bash
 
 script:
-  - python3 cloudflare-ddns.py -h
+  - python cloudflare-ddns.py -h

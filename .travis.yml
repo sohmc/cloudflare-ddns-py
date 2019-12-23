@@ -10,4 +10,4 @@ before_script:
   - bash .travis/create_template.bash
 
 script:
-  - python cloudflare-ddns.py -f
+  - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf

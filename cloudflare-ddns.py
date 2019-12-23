@@ -1,7 +1,7 @@
 """
 cloudflare-ddns.py -- Update your dynamic IP address automatically using
                       CloudFlare's latest API version 4.0
-Version 1.0
+Version 1.1
 
 Written by Michael Soh
 Licensed via GPL 3.0
@@ -159,7 +159,7 @@ def get_subdomain_id(subdomain):
             (cf_response['result'][0]['name'] == fqsubdomain)):
         cf_config['domain_id'] = str(cf_response['result'][0]['id'])
         cf_config['domain_record'] = str(cf_response['result'][0]['content'])
-        logging.debug('Got domain id: ' + cf_config['domain_id'] + ' :: ' + cf_config['domain_record']
+        logging.debug('Got domain id: ' + cf_config['domain_id'] + ' :: ' + cf_config['domain_record'])
     elif (len(cf_response['errors']) > 0):
         print("CloudFlare returned error(s): ")
         print(cf_response['errors'])

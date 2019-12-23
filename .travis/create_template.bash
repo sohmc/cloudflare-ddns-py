@@ -49,5 +49,5 @@ if [[ ! -d ~/.config ]]; then
 fi
 
 echo "Copying config file..."
-cp ${TEMP_FILE} ~/.config/.cf_ddns
+cp ${TEMP_FILE} ~/.config/.cf_ddns.conf
 

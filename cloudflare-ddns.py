@@ -126,7 +126,7 @@ def get_zone_id(zone_name):
     request_url = cf_api_url + '/zones';
 
     logging.debug('REQUEST GET: %s', request_url)
-    logging.debug('r_data being')
+    logging.debug('r_data being: %s', r_data)
 
     r = requests.get(request_url, headers=cf_headers(), params=r_data)
     cf_response = r.json()
@@ -135,6 +135,7 @@ def get_zone_id(zone_name):
     if ((cf_response['success'] == True) and
             (cf_response['result'][0]['name'] == zone_name)):
         cf_config['zone_id'] = str(cf_response['result'][0]['id'])
+        logging.debug('Got zone id: ' + cf_config['zone_id'])
     elif (len(cf_response['errors']) > 0):
         print("CloudFlare returned error(s): ")
         print(cf_response['errors'])
@@ -158,6 +159,7 @@ def get_subdomain_id(subdomain):
             (cf_response['result'][0]['name'] == fqsubdomain)):
         cf_config['domain_id'] = str(cf_response['result'][0]['id'])
         cf_config['domain_record'] = str(cf_response['result'][0]['content'])
+        logging.debug('Got domain id: ' + cf_config['domain_id'] + ' :: ' + cf_config['domain_record']
     elif (len(cf_response['errors']) > 0):
         print("CloudFlare returned error(s): ")
         print(cf_response['errors'])

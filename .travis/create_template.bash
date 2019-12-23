@@ -19,14 +19,6 @@ else
     sed -i "s/\$API_KEY/${API_KEY}/" ${TEMP_FILE}
 fi;
 
-if [[ -z "${EMAIL}" ]]; then
-    echo "EMAIL not set.  Exiting..."
-    exit 1;
-else
-    echo "Adding e-mail..."
-    sed -i "s/\$EMAIL/${EMAIL}/" ${TEMP_FILE}
-fi;
-
 if [[ -z "${SUBDOMAIN}" ]]; then
     echo "SUBDOMAIN not set.  Exiting..."
     exit 1;
@@ -42,6 +34,16 @@ else
     echo "Adding Zone..."
     sed -i "s/\$ZONE/${ZONE}/" ${TEMP_FILE}
 fi;
+
+
+if [[ -z "${EMAIL}" ]]; then
+    echo "EMAIL not set.  Removing..."
+    sed -i "/\$EMAIL/d" ${TEMP_FILE}
+else
+    echo "Adding e-mail..."
+    sed -i "s/\$EMAIL/${EMAIL}/" ${TEMP_FILE}
+fi;
+
 
 if [[ ! -d ~/.config ]]; then
     echo "Creating ~/.config"

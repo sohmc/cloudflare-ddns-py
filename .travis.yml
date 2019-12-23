@@ -2,6 +2,10 @@ language: python
 python:
   - "3.6"
 
+env:
+  - EMAIL=cloudflare.kz21@torque.mikesoh.com
+  - EMAIL=
+
 before_script:
   - bash .travis/create_template.bash
 

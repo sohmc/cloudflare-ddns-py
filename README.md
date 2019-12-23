@@ -1,5 +1,6 @@
-# cloudflare-ddns-py [![Build
-Status](https://travis-ci.com/sohmc/cloudflare-ddns-py.svg?branch=master)](https://travis-ci.com/sohmc/cloudflare-ddns-py)
+# cloudflare-ddns-py 
+
+[![Build Status](https://travis-ci.com/sohmc/cloudflare-ddns-py.svg?branch=master)](https://travis-ci.com/sohmc/cloudflare-ddns-py)
 
 **Current Version: 1.0 (Released 2019-Oct-21)**
 

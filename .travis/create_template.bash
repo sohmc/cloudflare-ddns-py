@@ -51,4 +51,3 @@ fi
 echo "Copying config file..."
 cp ${TEMP_FILE} ~/.config/.cf_ddns
 
-cat ~/.config/.cf_ddns

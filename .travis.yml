@@ -4,3 +4,6 @@ python:
 
 before_script:
   - bash .travis/create_template.bash
+
+script:
+  - python3 cloudflare-ddns.py -h

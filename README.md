@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/sohmc/cloudflare-ddns-py.svg?branch=master)](https://travis-ci.com/sohmc/cloudflare-ddns-py)
 
-**Current Version: 1.0 (Released 2019-Oct-21)**
+**Current Version: 1.1 (Released 2019-Dec-23)**
 
 Got a [CloudFlare](https://www.cloudflare.com)-managed domain that you
 want to update with your dynamically changing IP address?
@@ -20,11 +20,26 @@ In order to run this script, you'll need:
   work with newer versions of Python 3, but there is no guarentee.)
 * [`requests` library](http://docs.python-requests.org/en/master/), installable using `pip`
 
+If you want to run this without installing python, please look in the
+[Releases](./releases) tab.
+
 In order to make use of this script, you will also need to obtain a
 CloudFlare API key.  This is obtained by logging into CloudFlare and
-then clicking "[My Settings](https://www.cloudflare.com/a/account/my-account)", 
-which is located under the User menu on the top right corner of the 
-page.
+then clicking "[API
+Tokens](https://dash.cloudflare.com/profile/api-tokens)" under "My
+Profile",  which is located under the User menu on the top right corner 
+of the page.
+
+This script supports both the Global API key as well as the newer and
+more secure API Token.  When creating an API Token, you must give it the
+following rights:
+* Zone.Zone: Read
+* Zone.DNS: Edit
+* Include: All zones
+
+Yes, access to all zones is needed at this time.  Please see issue
+[#10](https://github.com/sohmc/cloudflare-ddns-py/issues/10) for
+details.
 
 
 ## Usage

@@ -26,14 +26,14 @@ cf_config = dict()
 
 # If you do not want to use a config file, you may manually
 # set the configuration here.  Uncomment the following lines
+# and set the parameters with the values necessary.  'email'
+# is only required if you are using the GLOBAL API Key.  If
+# you are using an API token, you MUST leave email commented
+# out.
 #cf_config['api_token'] = 'abcdef1234567890'
 #cf_config['email']     = 'me@example.com'
 #cf_config['zone']      = 'example.com'
 #cf_config['subdomain'] = 'foobar
-
-if ('api_token' in cf_config):
-    logging.info('Configuration set within the script.')
-    logging.debug(cf_config);
 
 # Do NOT append an ending slash here!
 cf_api_url = 'https://api.cloudflare.com/client/v4'
@@ -58,6 +58,7 @@ def print_usage():
     sys.exit(2)
 
 
+# Sets the configuration for the script
 def config():
     print("The information provided to this configuration ")
     print("is used to obtain information about your domain ")
@@ -67,8 +68,8 @@ def config():
     print("or checked for accuracy prior to running.")
     print("")
 
-    print("This application only supports both Global API keys")
-    print("as well as the newer and more secure API Tokens.")
+    print("This application supports both Global API keys as well as")
+    print("the newer and more secure API Tokens.")
     print("User Service keys are an enterprise feature and this")
     print("developer is a freeloader and can't test it.")
     print("")
@@ -82,7 +83,7 @@ def config():
     print("Please type in the e-mail address associated with CloudFlare, if using a Global Key: ")
     email = input("> ")
 
-    if 'email' != "":
+    if ('email' != ""):
         cf_config['email'] = input("> ")
 
     print("")
@@ -105,6 +106,7 @@ def config():
         json.dump(cf_config, outfile, sort_keys=True, indent=2)
 
 
+# sets headers for all requests
 def cf_headers():
     cf_headers = {}
 
@@ -119,7 +121,8 @@ def cf_headers():
     logging.debug('Setting CloudFlare headers: %s', cf_headers)
     return cf_headers
 
-
+# Gets the zone_id for the domain name, required for looking
+# up the record, and setting the IP address, of the subdomain
 def get_zone_id(zone_name):
     r_data = {'name': zone_name,
               'status': 'active'}
@@ -146,6 +149,8 @@ def get_zone_id(zone_name):
     return ret_val
 
 
+# Gets the subdomain_id of the subdomain, required for setting the IP
+# address.
 def get_subdomain_id(subdomain):
     fqsubdomain = subdomain + '.' + cf_config['zone']
     r_data = {'name': fqsubdomain,
@@ -167,6 +172,7 @@ def get_subdomain_id(subdomain):
         print("CloudFlare returned no results.")
 
 
+# Updates the IP address of the subdomain record.
 def update_cf_record():
     fqsubdomain = cf_config['subdomain'] + '.' + cf_config['zone']
     r_data = {'id': cf_config['domain_id'],
@@ -190,12 +196,15 @@ def update_cf_record():
     return False
 
 
+# Gets the current IP address, courtesy of ipify.org
 def get_current_dyip():
     r_params = {'format': 'json'}
     r = requests.get('http://api.ipify.org', params=r_params)
     cf_config['current_dyip'] = str(r.json()['ip'])
 
 
+# Procedure to show the current CloudFlare DNS record and 
+# the current IP address.
 def update():
     print("CloudFlare record:  " + cf_config['domain_record'])
     print("Current dynamic IP: " + cf_config['current_dyip'])
@@ -207,6 +216,7 @@ def update():
 
 # =-=-=-=-=-=-=-=-=-=- MAIN -=-=-=-=-=-=-=-=-=-= #
 
+# Check command for any parameters
 if (len(sys.argv) > 1):
     try:
         opts, args = getopt.getopt(sys.argv[1:], "fc:")
@@ -214,12 +224,14 @@ if (len(sys.argv) > 1):
         print_usage()
 
     for o, a in opts:
+        # Use provided config file
         if (o == '-c'):
             run_config = True
             if (a != ""):
                 cf_config_file = a
 
             logging.debug('Using config ' + cf_config_file);
+        # Force update of IP address, even if there is no change
         elif (o == '-f'):
             force_update = True
         else:
@@ -227,7 +239,10 @@ if (len(sys.argv) > 1):
 
 
 # read the configuration or force config if config file is empty
-if (os.path.isfile(cf_config_file) or (run_config == True)):
+if ('api_token' in cf_config):
+    logging.info('Configuration set within the script.')
+    logging.debug(cf_config);
+elif (os.path.isfile(cf_config_file) or (run_config == True)):
     try:
         logging.debug('Attempting to read config: ' + cf_config_file)
         with open(cf_config_file) as datafile:
@@ -236,6 +251,9 @@ if (os.path.isfile(cf_config_file) or (run_config == True)):
     except:
         if (run_config):
             config()
+else:
+    config();
+
 
 if ((not 'api_key' in cf_config) 
     or (not 'zone' in cf_config) 
@@ -247,12 +265,13 @@ if ((not 'api_key' in cf_config)
         print("     " + cf_config_file)
         exit(3)
 
-
+# All config work is done.  Let's actually check all the things.
 
 get_zone_id(cf_config['zone'])
 get_subdomain_id(cf_config['subdomain'])
 get_current_dyip()
 
+# Check if the current IP is different from the registered IP
 if (cf_config['current_dyip'] == cf_config['domain_record']):
     print("CloudFlare record matches current dynamic IP address.")
     if (force_update): 

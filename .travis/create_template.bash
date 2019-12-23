@@ -1,6 +1,9 @@
 #!/bin/bash -u
 TEMP_FILE=./cf_ddns.conf
 
+
+cd .travis/
+
 if [[ -f ./cf_ddns.conf ]]; then
     rm ${TEMP_FILE}
 fi

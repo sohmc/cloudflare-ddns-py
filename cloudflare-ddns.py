@@ -20,7 +20,7 @@ import logging
 logging.basicConfig(format='%(asctime)s %(process)d %(levelname)s %(message)s',
         level=logging.DEBUG)
 cf_config_file = os.path.expanduser('~/.config/.cf_ddns.conf')
-logging.debug('Expanding config file: %s', cf_config_file)
+logging.debug('Default config file location: %s', cf_config_file)
 
 cf_config = dict()
 
@@ -216,8 +216,10 @@ if (len(sys.argv) > 1):
     for o, a in opts:
         if (o == '-c'):
             run_config = True
-            if (not a):
+            if (a != ""):
                 cf_config_file = a
+
+            logging.debug('Using config ' + cf_config_file);
         elif (o == '-f'):
             force_update = True
         else:
@@ -227,8 +229,10 @@ if (len(sys.argv) > 1):
 # read the configuration or force config if config file is empty
 if (os.path.isfile(cf_config_file) or (run_config == True)):
     try:
+        logging.debug('Attempting to read config: ' + cf_config_file)
         with open(cf_config_file) as datafile:
             cf_config = json.load(datafile)
+            logging.debug('Config: %s', cf_config)
     except:
         if (run_config):
             config()

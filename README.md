@@ -20,9 +20,6 @@ In order to run this script, you'll need:
   work with newer versions of Python 3, but there is no guarentee.)
 * [`requests` library](http://docs.python-requests.org/en/master/), installable using `pip`
 
-If you want to run this without installing python, please look in the
-[Releases](./releases) tab.
-
 In order to make use of this script, you will also need to obtain a
 CloudFlare API key.  This is obtained by logging into CloudFlare and
 then clicking "[API

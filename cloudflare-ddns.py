@@ -67,16 +67,26 @@ def config():
     print("or checked for accuracy prior to running.")
     print("")
 
-    print("Please type in the e-mail address associated with CloudFlare: ")
-    cf_config['email'] = input("> ")
-    print("")
-
-    print("This application only supports GLOBAL API keys.")
+    print("This application only supports both Global API keys")
+    print("as well as the newer and more secure API Tokens.")
     print("User Service keys are an enterprise feature and this")
     print("developer is a freeloader and can't test it.")
-    print("Please copy and paste your GLOBAL API KEY:")
+    print("")
+
+    print("Please copy and paste your Global API Key or API Token:")
     cf_config['api_key'] = input("> ")
     print("")
+   
+    print("Global API Keys REQUIRE the e-mail address associated with")
+    print("the key.  If you are using a token, leave this blank.")
+    print("Please type in the e-mail address associated with CloudFlare, if using a Global Key: ")
+    email = input("> ")
+
+    if 'email' != "":
+        cf_config['email'] = input("> ")
+
+    print("")
+
 
     print("Type the zone name, or domain name, you are accessing.")
     print("For foobar.example.com, type here \"example.com\", without")
@@ -96,9 +106,15 @@ def config():
 
 
 def cf_headers():
-    cf_headers = {'X-Auth-Email': cf_config['email'], 
-                  'X-Auth-Key': cf_config['api_key'],
-                  'Content-Type': 'application/json'}
+    cf_headers = {}
+
+    if 'email' in cf_config:
+        cf_headers = {'X-Auth-Email': cf_config['email'], 
+                      'X-Auth-Key': cf_config['api_key'],
+                      'Content-Type': 'application/json'}
+    else:
+        cf_headers = {'Authorization': 'Bearer ' + cf_config['api_key'],
+                      'Content-Type': 'application/json'}
 
     logging.debug('Setting CloudFlare headers: %s', cf_headers)
     return cf_headers
@@ -215,8 +231,7 @@ if (os.path.isfile(cf_config_file) or (run_config == True)):
         if (run_config):
             config()
 
-if ((not 'email' in cf_config) 
-    or (not 'api_key' in cf_config) 
+if ((not 'api_key' in cf_config) 
     or (not 'zone' in cf_config) 
     or (not 'subdomain' in cf_config)):
         print("There was a problem parsing your configuration.  Please ensure that you")

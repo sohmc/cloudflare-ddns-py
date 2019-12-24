@@ -17,11 +17,12 @@ before_deploy:
   - pyinstaller --onefile ./cloudflare-ddns.py
   - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
   - git tag $TRAVIS_TAG
+  - ls -lR
 
 deploy:
   provider: releases
   api_key: $GITHUB_API_TOKEN
-  file: ./dist/cloudflare-ddns/cloudflare-ddns
+  file: ./dist/cloudflare-ddns
   skip_cleanup: true
   draft: true
   on:

@@ -15,6 +15,8 @@ script:
 before_deploy:
   - pip install --user pyinstaller
   - pyinstaller --onefile ./cloudflare-ddns.spec
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
 
 deploy:
   provider: releases
@@ -24,3 +26,4 @@ deploy:
   draft: true
   on:
     branch: master
+    tags: true

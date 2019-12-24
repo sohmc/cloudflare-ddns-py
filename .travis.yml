@@ -11,3 +11,16 @@ before_script:
 
 script:
   - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
+
+before_deploy:
+  - pip install --user pyinstaller
+  - pyinstaller --onefile ./cloudflare-ddns.spec
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_API_TOKEN
+  file: ./dist/cloudflare-ddns/cloudflare-ddns
+  skip_cleanup: true
+  draft: true
+  on:
+    branch: master

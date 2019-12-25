@@ -23,7 +23,7 @@ jobs:
     - stage: "Build binaries"
       name: "Build using Pyinstaller (Linux)"
       os: linux
-      before_deploy:
+      script:
         - pip install pyinstaller
         - pyinstaller --onefile ./cloudflare-ddns.py
         - cp ./dist/cloudflare-ddns ./dist/cloudflare-ddns-linux-amd64.bin

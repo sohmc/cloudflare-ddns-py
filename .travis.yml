@@ -2,13 +2,6 @@ language: python
 python:
   - "3.6"
 
-before_script:
-  - bash .travis/create_template.bash
-
-script:
-  - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
-
-
 jobs:
   include:
     - stage: "Tests"
@@ -16,9 +9,17 @@ jobs:
       env: 
         - EMAIL=cloudflare.kz21@torque.mikesoh.com
         - API_KEY=$GLOBAL_API_KEY
+      before_script:
+        - bash .travis/create_template.bash
+      script:
+        - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
     - name: "API Token test"
       env: 
         - API_KEY=$API_TOKEN
+      before_script:
+        - bash .travis/create_template.bash
+      script:
+        - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
     - stage: "Build binaries"
       name: "Build using Pyinstaller (Linux)"
       os: linux

@@ -25,7 +25,7 @@ jobs:
         - bash .travis/create_template.bash
       script:
         - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
-    - stage: "Build binaries"
+    - stage: "Build Binaries"
       name: "Build using Pyinstaller (Linux-amd64)"
       arch:
         - amd64
@@ -35,6 +35,12 @@ jobs:
       arch:
         - arm64
       os: linux
+      script: bash .travis/build_binary.bash
+    - name: "Build using Pyinstaller (Mac OS)"
+      os: osx
+      script: bash .travis/build_binary.bash
+    - name: "Build using Pyinstaller (Windows)"
+      os: windows
       script: bash .travis/build_binary.bash
     - stage: "Create Release Draft"
       os: linux

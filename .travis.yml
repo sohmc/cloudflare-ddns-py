@@ -2,10 +2,13 @@ language: python
 python:
   - "3.6"
 
+env:
+  - BUILD_ID=${TRAVIS_COMMIT:0:7}-${TRAVIS_BUILD_NUMBER}
+
 jobs:
   include:
     - stage: "Python Tests"
-      if: branch = build-matrix
+      if: branch != build-matrix
       name: "Global API KEY test"
       env: 
         - EMAIL=cloudflare.kz21@torque.mikesoh.com
@@ -15,7 +18,7 @@ jobs:
       script:
         - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
     - name: "API Token test"
-      if: branch = build-matrix
+      if: branch != build-matrix
       env: 
         - API_KEY=$API_TOKEN
       before_script:
@@ -24,6 +27,9 @@ jobs:
         - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
     - stage: "Build binaries"
       name: "Build using Pyinstaller (Linux)"
+      arch:
+        - amd64
+        - arm64
       os: linux
       script:
         - pip install awscli
@@ -31,7 +37,7 @@ jobs:
         - pyinstaller --onefile ./cloudflare-ddns.py
         - export BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
         - cp ./dist/cloudflare-ddns ./dist/${BIN_NAME}
-        - aws s3 cp ./dist/${BIN_NAME} s3://mikesoh.com-travis-ci.deployments/cloudflare_ddns/${TRAVIS_COMMIT:0:7}-${TRAVIS_BUILD_NUMBER}/
+        - aws s3 cp ./dist/${BIN_NAME} s3://mikesoh.com-travis-ci.deployments/cloudflare_ddns/${BUILD_ID}/
         - ls -lR
     - stage: "Create Release Draft"
       os: linux
@@ -40,7 +46,6 @@ jobs:
         provider: releases
         token: $GITHUB_API_TOKEN
         file: ./dist/cloudflare-ddns-linux-amd64.bin
-        cleanup: true
         cleanup: true
         draft: true
         on:

@@ -26,6 +26,10 @@ jobs:
       os: osx
       osx_image: xcode11.2
       language: shell
+      before_install:
+        - python -m pip install --upgrade pip
+      install:
+        - python -m pip install -r requirements.txt
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
@@ -33,11 +37,12 @@ jobs:
     - name: "Build using Pyinstaller (Windows)"
       os: windows
       language: shell
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
       before_install: 
         - choco install python --version 3.8.1
         - python -m pip install --upgrade pip
+      install:
         - python -m pip install -r requirements.txt
-      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash

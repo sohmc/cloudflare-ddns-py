@@ -24,17 +24,21 @@ jobs:
       name: "Build using Pyinstaller (Linux)"
       os: linux
       script:
+        - pip install awscli
         - pip install pyinstaller
         - pyinstaller --onefile ./cloudflare-ddns.py
-        - cp ./dist/cloudflare-ddns ./dist/cloudflare-ddns-linux-amd64.bin
-        - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-        - git tag $TRAVIS_TAG
+        - cp ./dist/cloudflare-ddns ./dist/cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
+        - aws s3 cp $! s3://mikesoh.com-travis-ci.deployments/cloudflare_ddns/${TRAVIS_COMMIT:0:7}-${TRAVIS_BUILD_NUMBER}/
         - ls -lR
+    - stage: "Create Release Draft"
+      os: linux
+      if: branch = master
       deploy:
         provider: releases
-        api_key: $GITHUB_API_TOKEN
+        token: $GITHUB_API_TOKEN
         file: ./dist/cloudflare-ddns-linux-amd64.bin
-        skip_cleanup: true
+        cleanup: true
+        cleanup: true
         draft: true
         on:
           branch: master

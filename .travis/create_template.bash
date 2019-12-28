@@ -1,6 +1,6 @@
 #!/bin/bash -u
 TEMP_FILE=./cf_ddns.conf
-SED_OPTIONS='${SED_OPTIONS}'
+SED_OPTIONS='-i'
 
 cd .travis/
 
@@ -8,8 +8,9 @@ if [[ -f ./cf_ddns.conf ]]; then
     rm ${TEMP_FILE}
 fi
 
-if [[ ${TRAVIS_OS_NAME} -eq "osx" ]]; then
-    SED_OPTIONS='${SED_OPTIONS} "" -e '
+if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+    echo "Setting sed options for osx"
+    SED_OPTIONS='-i "" -e '
 fi
 
 echo "Creating copy of the template..."

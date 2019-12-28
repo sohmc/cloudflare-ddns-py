@@ -1,7 +1,6 @@
 #!/bin/bash -u
 TEMP_FILE=./cf_ddns.conf
 
-
 cd .travis/
 
 if [[ -f ./cf_ddns.conf ]]; then
@@ -43,13 +42,4 @@ else
     echo "Adding e-mail..."
     sed -i "s/\$EMAIL/${EMAIL}/" ${TEMP_FILE}
 fi;
-
-
-if [[ ! -d ~/.config ]]; then
-    echo "Creating ~/.config"
-    mkdir ~/.config
-fi
-
-echo "Copying config file..."
-cp ${TEMP_FILE} ~/.config/.cf_ddns.conf
 

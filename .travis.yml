@@ -7,39 +7,29 @@ env:
 
 jobs:
   include:
-    - stage: "Python Tests"
-      if: branch != build-matrix
-      name: "Global API KEY test"
-      env: 
-        - EMAIL=cloudflare.kz21@torque.mikesoh.com
-        - API_KEY=$GLOBAL_API_KEY
-      before_script:
-        - bash .travis/create_template.bash
-      script:
-        - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
-    - name: "API Token test"
-      if: branch != build-matrix
-      env: 
-        - API_KEY=$API_TOKEN
-      before_script:
-        - bash .travis/create_template.bash
-      script:
-        - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
-#    - stage: "Build Binaries"
-#      name: "Build using Pyinstaller (Linux-amd64)"
-#      os: 
-#        - linux
-#      script: bash .travis/build_binary.bash
-#    - name: "Build using Pyinstaller (Linux-arm64)"
-#      arch:
-#        - arm64
-#      os: linux
-#      script: bash .travis/build_binary.bash
-#    - name: "Build using Pyinstaller (Mac OS)"
-#      os: osx
-#      osx_image: xcode11.2
-#      language: shell
-#      script: bash .travis/build_binary.bash
+    - stage: "Test and Build"
+      name: "Build using Pyinstaller (Linux-amd64)"
+      os: linux
+      script: 
+        - bash .travis/test_python3.bash
+        - bash .travis/build_binary.bash
+        - bash .travis/test_binary.bash
+    - name: "Build using Pyinstaller (Linux-arm64)"
+      arch:
+        - arm64
+      os: linux
+      script: 
+        - bash .travis/test_python3.bash
+        - bash .travis/build_binary.bash
+        - bash .travis/test_binary.bash
+    - name: "Build using Pyinstaller (Mac OS)"
+      os: osx
+      osx_image: xcode11.2
+      language: shell
+      script: 
+        - bash .travis/test_python3.bash
+        - bash .travis/build_binary.bash
+        - bash .travis/test_binary.bash
     - name: "Build using Pyinstaller (Windows)"
       os: windows
       language: shell
@@ -47,7 +37,10 @@ jobs:
         - choco install python --version 3.8.1
         - python -m pip install --upgrade pip
       env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
-      script: bash .travis/build_binary.bash
+      script: 
+        - bash .travis/test_python3.bash
+        - bash .travis/build_binary.bash
+        - bash .travis/test_binary.bash
     - stage: "Create Release Draft"
       os: linux
       if: branch = master

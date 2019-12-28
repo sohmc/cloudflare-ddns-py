@@ -25,30 +25,28 @@ jobs:
         - bash .travis/create_template.bash
       script:
         - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
-    - stage: "Build Binaries"
-      name: "Build using Pyinstaller (Linux-amd64)"
-      os: 
-        - linux
-        - osx
-        - windows
-      script: bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Linux-arm64)"
-      arch:
-        - arm64
-      os: linux
-      script: bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Mac OS)"
-      os: osx
-      osx_image: xcode11.2
-      language: shell
-      script: bash .travis/build_binary.bash
+#    - stage: "Build Binaries"
+#      name: "Build using Pyinstaller (Linux-amd64)"
+#      os: 
+#        - linux
+#      script: bash .travis/build_binary.bash
+#    - name: "Build using Pyinstaller (Linux-arm64)"
+#      arch:
+#        - arm64
+#      os: linux
+#      script: bash .travis/build_binary.bash
+#    - name: "Build using Pyinstaller (Mac OS)"
+#      os: osx
+#      osx_image: xcode11.2
+#      language: shell
+#      script: bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Windows)"
       os: windows
       language: shell
       before_install: 
-        - choco install python --version 3.6.9
+        - choco install python --version 3.8.1
         - python -m pip install --upgrade pip
-      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
       script: bash .travis/build_binary.bash
     - stage: "Create Release Draft"
       os: linux

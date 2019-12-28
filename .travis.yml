@@ -4,7 +4,8 @@ python:
 
 jobs:
   include:
-    - stage: "Tests"
+    - stage: "Python Tests"
+      if: branch = build-matrix
       name: "Global API KEY test"
       env: 
         - EMAIL=cloudflare.kz21@torque.mikesoh.com
@@ -14,6 +15,7 @@ jobs:
       script:
         - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
     - name: "API Token test"
+      if: branch = build-matrix
       env: 
         - API_KEY=$API_TOKEN
       before_script:

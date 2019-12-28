@@ -26,19 +26,16 @@ jobs:
       script:
         - python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
     - stage: "Build binaries"
-      name: "Build using Pyinstaller (Linux)"
+      name: "Build using Pyinstaller (Linux-amd64)"
       arch:
         - amd64
+      os: linux
+      script: bash .travis/build_binary.bash
+    - name: "Build using Pyinstaller (Linux-arm64)"
+      arch:
         - arm64
       os: linux
-      script:
-        - pip install awscli
-        - pip install pyinstaller
-        - pyinstaller --onefile ./cloudflare-ddns.py
-        - export BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
-        - cp ./dist/cloudflare-ddns ./dist/${BIN_NAME}
-        - aws s3 cp ./dist/${BIN_NAME} s3://mikesoh.com-travis-ci.deployments/cloudflare_ddns/${BUILD_ID}/
-        - ls -lR
+      script: bash .travis/build_binary.bash
     - stage: "Create Release Draft"
       os: linux
       if: branch = master

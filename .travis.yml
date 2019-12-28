@@ -27,8 +27,9 @@ jobs:
         - pip install awscli
         - pip install pyinstaller
         - pyinstaller --onefile ./cloudflare-ddns.py
-        - cp ./dist/cloudflare-ddns ./dist/cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
-        - aws s3 cp $! s3://mikesoh.com-travis-ci.deployments/cloudflare_ddns/${TRAVIS_COMMIT:0:7}-${TRAVIS_BUILD_NUMBER}/
+        - export BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
+        - cp ./dist/cloudflare-ddns ./dist/${BIN_NAME}
+        - aws s3 cp ./dist/${BIN_NAME} s3://mikesoh.com-travis-ci.deployments/cloudflare_ddns/${TRAVIS_COMMIT:0:7}-${TRAVIS_BUILD_NUMBER}/
         - ls -lR
     - stage: "Create Release Draft"
       os: linux

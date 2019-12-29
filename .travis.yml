@@ -12,7 +12,6 @@ jobs:
       os: linux
       script: 
         - bash .travis/test_python3.bash
-      after_script:
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Linux-arm64)"
       if: branch = master AND type = pull_request
@@ -21,7 +20,6 @@ jobs:
       os: linux
       script: 
         - bash .travis/test_python3.bash
-      after_script:
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Mac OS)"
       if: branch = master AND type = pull_request
@@ -34,7 +32,6 @@ jobs:
         - python -m pip install -r requirements.txt
       script: 
         - bash .travis/test_python3.bash
-      after_script:
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Windows)"
       if: branch = master AND type = pull_request

@@ -76,6 +76,8 @@ jobs:
 #       - bash .travis/test_binary.bash
     - stage: "Create Release Draft"
       os: linux
+      language: python
+      python: "3.6"
       if: branch = master AND type = push
       install:
         - pip install awscli

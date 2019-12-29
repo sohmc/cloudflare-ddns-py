@@ -22,7 +22,7 @@ echo "Building template..."
 bash .travis/create_template.bash
 
 echo "Running script..."
-${BIN_NAME} -f -c .travis/cf_ddns.conf
+./${BIN_NAME} -f -c .travis/cf_ddns.conf
 
 
 echo "Global API Key Test"
@@ -33,4 +33,4 @@ echo "Building template..."
 bash .travis/create_template.bash
 
 echo "Running script..."
-${BIN_NAME} -f -c .travis/cf_ddns.conf
+./${BIN_NAME} -f -c .travis/cf_ddns.conf

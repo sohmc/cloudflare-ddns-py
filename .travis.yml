@@ -3,7 +3,7 @@ python:
   - "3.6"
 
 env:
-  - BUILD_ID=${TRAVIS_COMMIT:0:7}-${TRAVIS_BUILD_NUMBER}
+  - BUILD_ID=${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT:0:7}
 
 jobs:
   include:
@@ -39,6 +39,7 @@ jobs:
       language: shell
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
       before_install: 
+        - echo $BUILD_ID
         - choco install python --version 3.7.6
         - python -m pip install --upgrade pip
       install:
@@ -54,7 +55,7 @@ jobs:
         - pip install awscli
       script:
         - mkdir build
-        - aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/* ./build/
+        - aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ ./build/ --recursive
         - ls -lR ./build
       deploy:
         provider: releases

@@ -12,17 +12,19 @@ jobs:
       os: linux
       script: 
         - bash .travis/test_python3.bash
+      after_script:
         - bash .travis/build_binary.bash
-        - bash .travis/test_binary.bash
     - name: "Build using Pyinstaller (Linux-arm64)"
+      if: branch = master AND type = pull_request
       arch:
         - arm64
       os: linux
       script: 
         - bash .travis/test_python3.bash
+      after_script:
         - bash .travis/build_binary.bash
-        - bash .travis/test_binary.bash
     - name: "Build using Pyinstaller (Mac OS)"
+      if: branch = master AND type = pull_request
       os: osx
       osx_image: xcode11.2
       language: shell
@@ -32,9 +34,10 @@ jobs:
         - python -m pip install -r requirements.txt
       script: 
         - bash .travis/test_python3.bash
+      after_script:
         - bash .travis/build_binary.bash
-        - bash .travis/test_binary.bash
     - name: "Build using Pyinstaller (Windows)"
+      if: branch = master AND type = pull_request
       os: windows
       language: shell
       env: 
@@ -49,10 +52,33 @@ jobs:
       script: 
 #       - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
+    - stage: "Test Binaries"
+      name: "Linux-amd64"
+      if: branch = master AND type = pull_request
+      os: linux
+      script: 
+        - bash .travis/test_binary.bash
+    - name: "Linux-arm64"
+      if: branch = master AND type = pull_request
+      arch:
+        - arm64
+      os: linux
+      script: 
+        - bash .travis/test_binary.bash
+    - name: "Mac OS X"
+      if: branch = master AND type = pull_request
+      os: osx
+      language: shell
+      script: 
+        - bash .travis/test_binary.bash
+#    - name: "Windows"
+#      os: windows
+#      language: shell
+#      script: 
 #       - bash .travis/test_binary.bash
     - stage: "Create Release Draft"
       os: linux
-      if: branch = master AND type != pull_request
+      if: branch = master AND type = push
       install:
         - pip install awscli
       script:

@@ -52,7 +52,7 @@ jobs:
 #       - bash .travis/test_binary.bash
     - stage: "Create Release Draft"
       os: linux
-      if: branch = master
+      if: branch = master AND type != pull_request
       install:
         - pip install awscli
       script:
@@ -66,6 +66,7 @@ jobs:
         file: ./build/*
         cleanup: false
         draft: true
+        edge: true
         on:
           branch: master
           tags: true

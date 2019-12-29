@@ -12,7 +12,7 @@ jobs:
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Linux-arm64)"
-      if: branch = master AND type = pull_request
+      if: branch = master AND type in (pull_request, push)
       arch:
         - arm64
       os: linux
@@ -22,7 +22,7 @@ jobs:
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Mac OS)"
-      if: branch = master AND type = pull_request
+      if: branch = master AND type in (pull_request, push)
       os: osx
       osx_image: xcode11.2
       language: shell
@@ -34,7 +34,7 @@ jobs:
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Windows)"
-      if: branch = master AND type = pull_request
+      if: branch = master AND type in (pull_request, push)
       os: windows
       language: shell
       env: 
@@ -56,7 +56,7 @@ jobs:
       script: 
         - bash .travis/test_binary.bash
     - name: "Linux-arm64"
-      if: branch = master AND type = pull_request
+      if: branch = master AND type in (pull_request, push)
       arch:
         - arm64
       os: linux
@@ -64,7 +64,7 @@ jobs:
       script: 
         - bash .travis/test_binary.bash
     - name: "Mac OS X"
-      if: branch = master AND type = pull_request
+      if: branch = master AND type in (pull_request, push)
       os: osx
       language: shell
       script: 
@@ -85,7 +85,7 @@ jobs:
         - mkdir build
         - aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ ./build/ --recursive
         - ls -lR ./build
-        - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)
+        - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
         - echo ${TRAVIS_TAG}
         - git tag $TRAVIS_TAG
       deploy:

@@ -36,7 +36,6 @@ jobs:
         - bash .travis/test_binary.bash
     - name: "Build using Pyinstaller (Windows)"
       os: windows
-      if: branch = some-branch-doesnt-exist
       language: shell
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
       before_install: 
@@ -45,17 +44,24 @@ jobs:
       install:
         - python -m pip install -r requirements.txt
       script: 
-        - bash .travis/test_python3.bash
+#       - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-        - bash .travis/test_binary.bash
+#       - bash .travis/test_binary.bash
     - stage: "Create Release Draft"
       os: linux
       if: branch = master
+      install:
+        - pip install awscli
+      script:
+        - mkdir build
+        - aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/* ./build/
+        - ls -lR ./build
       deploy:
         provider: releases
         token: $GITHUB_API_TOKEN
-        file: ./dist/cloudflare-ddns-linux-amd64.bin
-        cleanup: true
+        file_glob: true
+        file: ./build/*
+        cleanup: false
         draft: true
         on:
           branch: master

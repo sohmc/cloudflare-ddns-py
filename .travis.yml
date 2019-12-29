@@ -36,10 +36,11 @@ jobs:
         - bash .travis/test_binary.bash
     - name: "Build using Pyinstaller (Windows)"
       os: windows
+      if: branch = some-branch-doesnt-exist
       language: shell
-      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
       before_install: 
-        - choco install python --version 3.8.1
+        - choco install python --version 3.7.6
         - python -m pip install --upgrade pip
       install:
         - python -m pip install -r requirements.txt

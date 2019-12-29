@@ -37,7 +37,9 @@ jobs:
     - name: "Build using Pyinstaller (Windows)"
       os: windows
       language: shell
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      env: 
+        - BUILD_ID=${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT:0:7}
+        - PATH=/c/Python37:/c/Python37/Scripts:$PATH
       before_install: 
         - echo $BUILD_ID
         - choco install python --version 3.7.6
@@ -67,3 +69,6 @@ jobs:
         on:
           branch: master
           tags: true
+      after_deploy:
+        script:
+          - aws s3 rm s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID} --recursive

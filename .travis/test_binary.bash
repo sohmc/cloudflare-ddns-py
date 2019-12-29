@@ -13,6 +13,7 @@ echo "Getting binary from S3..."
 curl -v $S3_URI -o $BIN_NAME
 
 chmod +x ${BIN_NAME}
+ls -lR
 
 echo "API Token Test"
 export API_KEY=$API_TOKEN

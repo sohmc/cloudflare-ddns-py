@@ -10,7 +10,7 @@ S3_URI=https://s3.amazonaws.com/${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BU
 set -ev
 
 echo "Getting binary from S3..."
-curl -v $S3_URI
+curl -v $S3_URI -o $BIN_NAME
 
 chmod +x ${BIN_NAME}
 

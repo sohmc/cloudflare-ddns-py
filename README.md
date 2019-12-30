@@ -8,9 +8,7 @@ Got a [CloudFlare](https://www.cloudflare.com)-managed domain that you
 want to update with your dynamically changing IP address?
 
 `cloudflare-ddns` will update your `A RECORD` on CloudFlare using their
-latest API, version 4.0.  [Previous project](https://bitbucket.org/sohmc/cloudflare-ddns-git)
-uses API 1.0, which [CloudFlare is retiring on November 9th,
-2016](https://blog.cloudflare.com/sunsetting-api-v1-in-favor-of-cloudflares-current-client-api-api-v4/).
+latest API, version 4.0. 
 
 
 ## Requirements

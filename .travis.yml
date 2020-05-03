@@ -11,15 +11,15 @@ jobs:
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Linux-arm64)"
-      if: branch = master OR tag IS present
-      arch: arm64
-      os: linux
-      language: python
-      python: "3.6"
-      script: 
-        - bash .travis/test_python3.bash
-        - bash .travis/build_binary.bash
+#    - name: "Build using Pyinstaller (Linux-arm64)"
+#      if: branch = master OR tag IS present
+#      arch: arm64
+#      os: linux
+#      language: python
+#      python: "3.6"
+#      script: 
+#        - bash .travis/test_python3.bash
+#        - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Mac OS)"
       if: branch = master OR tag IS present
       os: osx
@@ -54,13 +54,13 @@ jobs:
       language: shell
       script: 
         - bash .travis/test_binary.bash
-    - name: "Linux-arm64"
-      if: branch = master OR tag IS present
-      arch: arm64
-      os: linux
-      language: shell
-      script: 
-        - bash .travis/test_binary.bash
+#    - name: "Linux-arm64"
+#      if: branch = master OR tag IS present
+#      arch: arm64
+#      os: linux
+#      language: shell
+#      script: 
+#        - bash .travis/test_binary.bash
     - name: "Mac OS X"
       if: branch = master OR tag IS present
       os: osx

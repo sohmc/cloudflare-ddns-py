@@ -2,6 +2,8 @@
 BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
 DIST_FILE=cloudflare-ddns
 
+mkdir -p ~/.cache/pip/wheels
+
 set -ev
 pip install awscli
 pip install pyinstaller

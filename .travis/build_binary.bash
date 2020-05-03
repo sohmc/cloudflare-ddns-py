@@ -5,6 +5,9 @@ DIST_FILE=cloudflare-ddns
 set -ev
 pip install awscli
 pip install pyinstaller
+
+sudo chown -Rv $USER:$GROUP ~/.cache/pip/wheels
+
 pyinstaller --log-level=DEBUG --onefile ./cloudflare-ddns.py
 
 if [[ $TRAVIS_OS_NAME == "windows" ]]; then

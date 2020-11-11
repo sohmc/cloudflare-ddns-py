@@ -23,6 +23,7 @@ elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
         -o "AWSCLIV2.pkg"
     installer -pkg awscliv2.pkg --target /
 elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+    echo "I haven't built windows yet :-P"
 fi
 
 

@@ -12,7 +12,8 @@ jobs:
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Linux-arm64)"
-      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+      if: branch = master OR tag IS present
       arch: arm64
       os: linux
       language: python
@@ -21,7 +22,8 @@ jobs:
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Mac OS)"
-      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+      if: branch = master OR tag IS present
       os: osx
       osx_image: xcode11.2
       language: shell
@@ -33,8 +35,8 @@ jobs:
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Windows)"
-#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
-      if: branch = master OR tag IS present
+      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+#      if: branch = master OR tag IS present
       os: windows
       language: shell
       env: 
@@ -44,7 +46,7 @@ jobs:
         - echo $BUILD_ID
         - choco install python awscli
       install:
-        - python -m pip install -r requirements.txt
+        - python3 -m pip install -r requirements.txt
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
@@ -69,12 +71,13 @@ jobs:
       language: shell
       script: 
         - bash .travis/test_binary.bash
-#    - name: "Windows"
+    - name: "Windows"
+      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
 #      if: branch = master OR tag IS present
-#      os: windows
-#      language: shell
-#      script: 
-#       - bash .travis/test_binary.bash
+      os: windows
+      language: shell
+      script: 
+       - bash .travis/test_binary.bash
     - stage: "Create Release Draft"
       os: linux
       language: python

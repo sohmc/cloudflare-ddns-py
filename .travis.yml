@@ -41,7 +41,7 @@ jobs:
       language: shell
       env: 
         - BUILD_ID=${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT:0:7}
-        - PATH=/c/Python37:/c/Python37/Scripts:$PATH
+        - PATH=/c/Python39:/c/Python39/Scripts:$PATH
       before_install: 
         - echo $BUILD_ID
         - choco install python awscli

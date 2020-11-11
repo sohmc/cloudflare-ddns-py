@@ -26,9 +26,9 @@ jobs:
       osx_image: xcode11.2
       language: shell
       before_install:
-        - python -m pip install --upgrade pip
+        - python3 -m pip install --upgrade pip
       install:
-        - python -m pip install -r requirements.txt
+        - python3 -m pip install -r requirements.txt
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash

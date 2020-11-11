@@ -7,7 +7,7 @@ mkdir -p ~/.cache/pip/wheels
 
 set -ev
 
-echo "Installing AWS CLI v. ${AWSCLI_VERSION} for OS ${TRAVIS_OS_NAME} on arch ${TRAVIS_CPI_ARCH}"
+echo "Installing AWS CLI v. ${AWSCLI_VERSION} for OS ${TRAVIS_OS_NAME} on arch ${TRAVIS_CPU_ARCH}"
 
 if [[ $TRAVIS_OS_NAME == "linux" ]]; then
     if [[ $TRAVIS_CPU_ARCH == "amd64" ]]; then 
@@ -18,6 +18,7 @@ if [[ $TRAVIS_OS_NAME == "linux" ]]; then
 
     curl ${DOWNLOAD_URL} -o awscliv2.zip
     unzip awscliv2.zip
+    ./aws/install
 elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
     curl "https://awscli.amazonaws.com/AWSCLIV2-${AWSCLI_VERSION}.pkg" \
         -o "AWSCLIV2.pkg"
@@ -26,7 +27,12 @@ elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
     echo "I haven't built windows yet :-P"
 fi
 
+echo "Testing for AWS cli"
 
+aws --version
+
+
+echo "Installing pyinstaller"
 pip install pyinstaller
 
 echo chowning pip wheels directory

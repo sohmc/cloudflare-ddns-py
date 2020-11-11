@@ -44,8 +44,7 @@ jobs:
         - PATH=/c/Python39:/c/Python39/Scripts:$PATH
       before_install: 
         - echo $BUILD_ID
-        - choco install python awscli
-        - where python
+        - choco install python --version 3.9.0
       install:
         - pip3 install --user -r requirements.txt
       script: 

@@ -9,7 +9,7 @@ echo "Building template..."
 bash .travis/create_template.bash
 
 echo "Running script..."
-python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
+python3 cloudflare-ddns.py -f -c .travis/cf_ddns.conf
 
 
 echo "Global API Key Test"
@@ -20,4 +20,4 @@ echo "Building template..."
 bash .travis/create_template.bash
 
 echo "Running script..."
-python cloudflare-ddns.py -f -c .travis/cf_ddns.conf
+python3 cloudflare-ddns.py -f -c .travis/cf_ddns.conf

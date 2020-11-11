@@ -46,7 +46,7 @@ jobs:
         - echo $BUILD_ID
         - choco install python --version 3.9.0
         - choco install awscli
-        - cat C:\ProgramData\chocolatey\logs\chocolatey.log
+        - cat /c/ProgramData/chocolatey/logs/chocolatey.log
       install:
         - pip3 install --user -r requirements.txt
       script: 

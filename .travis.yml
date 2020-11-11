@@ -44,9 +44,9 @@ jobs:
         - PATH=/c/Python39:/c/Python39/Scripts:$PATH
       before_install: 
         - echo $BUILD_ID
-        - choco install python --version 3.9.0
+          #        - choco install python --version 3.9.0
         - choco install awscli
-        - cat /c/ProgramData/chocolatey/logs/chocolatey.log
+        - ls -lR /c/Program\ Files/Amazon/AWSCLI/bin
       install:
         - pip3 install --user -r requirements.txt
       script: 

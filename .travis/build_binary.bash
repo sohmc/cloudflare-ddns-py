@@ -1,11 +1,31 @@
 #!/bin/bash
 BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
 DIST_FILE=cloudflare-ddns
+AWSCLI_VERSION=2.0.56
 
 mkdir -p ~/.cache/pip/wheels
 
 set -ev
-pip install awscli
+
+echo "Installing AWS CLI v. ${AWSCLI_VERSION} for OS ${TRAVIS_OS_NAME} on arch ${TRAVIS_CPI_ARCH}"
+
+if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+    if [[ $TRAVIS_CPU_ARCH == "amd64" ]]; then 
+        DOWNLOAD_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_VERSION}.zip"
+    elif [[ $TRAVIS_CPU_ARCH == "arm64" ]]; then 
+        DOWNLOAD_URL="https://awscli.amazonaws.com/awscli-exe-linux-aarch64-${AWSCLI_VERSION}.zip"
+    fi
+
+    curl ${DOWNLOAD_URL} -o awscliv2.zip
+    unzip awscliv2.zip
+elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
+    curl "https://awscli.amazonaws.com/AWSCLIV2-${AWSCLI_VERSION}.pkg" \
+        -o "AWSCLIV2.pkg"
+    installer -pkg awscliv2.pkg --target /
+elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+fi
+
+
 pip install pyinstaller
 
 echo chowning pip wheels directory

@@ -11,17 +11,17 @@ jobs:
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-#    - name: "Build using Pyinstaller (Linux-arm64)"
-#      if: branch = master OR tag IS present
-#      arch: arm64
-#      os: linux
-#      language: python
-#      python: "3.6"
-#      script: 
-#        - bash .travis/test_python3.bash
-#        - bash .travis/build_binary.bash
+    - name: "Build using Pyinstaller (Linux-arm64)"
+      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+      arch: arm64
+      os: linux
+      language: python
+      python: "3.6"
+      script: 
+        - bash .travis/test_python3.bash
+        - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Mac OS)"
-      if: branch = master OR tag IS present
+      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
       os: osx
       osx_image: xcode11.2
       language: shell
@@ -33,6 +33,7 @@ jobs:
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Windows)"
+      # if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
       if: branch = master OR tag IS present
       os: windows
       language: shell

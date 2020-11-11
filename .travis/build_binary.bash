@@ -18,7 +18,6 @@ if [[ $TRAVIS_OS_NAME == "linux" ]]; then
 
     curl ${DOWNLOAD_URL} -o awscliv2.zip
     unzip awscliv2.zip
-    whoami
     sudo ./aws/install
 elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
     curl "https://awscli.amazonaws.com/AWSCLIV2-${AWSCLI_VERSION}.pkg" \
@@ -54,4 +53,3 @@ if [[ -f ./dist/${DIST_FILE} ]]; then
         --acl public-read
 fi
 
-ls -lR

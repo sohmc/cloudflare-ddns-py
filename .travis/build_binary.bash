@@ -33,7 +33,7 @@ aws --version
 
 
 echo "Installing pyinstaller"
-pip install pyinstaller
+pip3 install pyinstaller
 
 echo chowning pip wheels directory
 chown -Rv $USER:$GROUP ~/.cache/pip/wheels

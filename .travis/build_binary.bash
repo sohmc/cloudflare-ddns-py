@@ -22,7 +22,7 @@ if [[ $TRAVIS_OS_NAME == "linux" ]]; then
 elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
     curl "https://awscli.amazonaws.com/AWSCLIV2-${AWSCLI_VERSION}.pkg" \
         -o "AWSCLIV2.pkg"
-    sudo installer -pkg awscliv2.pkg --target /
+    sudo installer -pkg awscliv2.pkg -target /
 elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
     echo "I haven't built windows yet :-P"
 fi

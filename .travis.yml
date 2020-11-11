@@ -55,13 +55,13 @@ jobs:
       language: shell
       script: 
         - bash .travis/test_binary.bash
-#    - name: "Linux-arm64"
-#      if: branch = master OR tag IS present
-#      arch: arm64
-#      os: linux
-#      language: shell
-#      script: 
-#        - bash .travis/test_binary.bash
+    - name: "Linux-arm64"
+      if: branch = master OR tag IS present
+      arch: arm64
+      os: linux
+      language: shell
+      script: 
+        - bash .travis/test_binary.bash
     - name: "Mac OS X"
       if: branch = master OR tag IS present
       os: osx

@@ -46,7 +46,7 @@ jobs:
         - echo $BUILD_ID
           #        - choco install python --version 3.9.0
         - choco install awscli
-        - ls -lR /c/ | grep -i awscli
+        - ls -lR /c/Program\ Files/Amazon/AWSCLIV2/
       install:
         - pip3 install --user -r requirements.txt
       script: 

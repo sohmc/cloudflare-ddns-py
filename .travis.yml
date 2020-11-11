@@ -45,8 +45,9 @@ jobs:
       before_install: 
         - echo $BUILD_ID
         - choco install python awscli
+        - where python
       install:
-        - pip3 install -r requirements.txt
+        - pip3 install --user -r requirements.txt
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
@@ -57,16 +58,16 @@ jobs:
       script: 
         - bash .travis/test_binary.bash
     - name: "Linux-arm64"
-      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
-#      if: branch = master OR tag IS present
+#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+      if: branch = master OR tag IS present
       arch: arm64
       os: linux
       language: shell
       script: 
         - bash .travis/test_binary.bash
     - name: "Mac OS X"
-      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
-#      if: branch = master OR tag IS present
+#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+      if: branch = master OR tag IS present
       os: osx
       language: shell
       script: 

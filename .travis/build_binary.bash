@@ -25,11 +25,10 @@ elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
     sudo installer -pkg awscliv2.pkg -target /
 elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
     echo "Installing via choco..."
-    choco install awscli
+#    choco install awscli
 fi
 
 echo "Testing for AWS cli"
-
 aws --version
 
 

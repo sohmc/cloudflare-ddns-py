@@ -45,6 +45,8 @@ jobs:
       before_install: 
         - echo $BUILD_ID
         - choco install python --version 3.9.0
+        - choco install awscli
+        - where aws
       install:
         - pip3 install --user -r requirements.txt
       script: 

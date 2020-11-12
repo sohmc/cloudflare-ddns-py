@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/sohmc/cloudflare-ddns-py.svg?branch=master)](https://travis-ci.com/sohmc/cloudflare-ddns-py)
 
-**Current Version: 1.1 (Released 2019-Dec-23)**
+**Current Version: 1.2 (Released 2020-Nov-11)**
 
 Got a [CloudFlare](https://www.cloudflare.com)-managed domain that you
 want to update with your dynamically changing IP address?
@@ -14,8 +14,8 @@ latest API, version 4.0.
 ## Requirements
 
 In order to run this script, you'll need:
-* Python 3 (This script was developed using Python 3.6.8.  It _should_
-  work with newer versions of Python 3, but there is no guarentee.)
+* Python 3 (This script was developed using Python 3.6.8, with Travis-CI 
+  testing it against 2.9.0.)
 * [`requests` library](http://docs.python-requests.org/en/master/), installable using `pip`
 
 In order to make use of this script, you will also need to obtain a
@@ -55,13 +55,5 @@ usage: cloudflare-ddns.py [-f] [-c <config_file>]
 ## License
 
 This project is licensed using the [GNU Public License
-3.0](https://www.gnu.org/licenses/gpl-3.0.en.html).  I also have a very
-strict "It works for me, YMMV" motto.  Feel free to submit your bug
-reports and feature requests but support is not guarenteed, implied, or
-explictly offered.
+3.0](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
-
-## Pull Requests
-
-Pull requests are encouraged onto the `staging` branch.  The `master`
-branch is reserved for releases.

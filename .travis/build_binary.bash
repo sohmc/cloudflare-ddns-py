@@ -29,12 +29,12 @@ elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
     choco install awscli
     AWS_CMD="/c/Program Files/Amazon/AWSCLIV2/aws.exe"
     echo ${AWS_CMD}
-    ls -lR ${AWS_CMD}
+    ls -lR "${AWS_CMD}"
 fi
 
 
 echo "Testing for AWS cli"
-${AWS_CMD} --version
+"${AWS_CMD}" --version
 
 
 echo "Installing pyinstaller"
@@ -52,7 +52,7 @@ fi
 
 if [[ -f ./dist/${DIST_FILE} ]]; then
     cp ./dist/cloudflare-ddns ./dist/${BIN_NAME}
-    ${AWS_CMD} s3 cp \
+    "${AWS_CMD}" s3 cp \
         ./dist/${BIN_NAME} \
         s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ \
         --acl public-read

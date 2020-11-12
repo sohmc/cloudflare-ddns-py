@@ -7,28 +7,28 @@ jobs:
       name: "Build using Pyinstaller (Linux-amd64)"
       os: linux
       language: python
-      python: "3.6"
+      python: "3.9"
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-#    - name: "Build using Pyinstaller (Linux-arm64)"
-#      if: branch = master OR tag IS present
-#      arch: arm64
-#      os: linux
-#      language: python
-#      python: "3.6"
-#      script: 
-#        - bash .travis/test_python3.bash
-#        - bash .travis/build_binary.bash
+    - name: "Build using Pyinstaller (Linux-arm64)"
+      if: branch = master OR tag IS present
+      arch: arm64
+      os: linux
+      language: python
+      python: "3.9"
+      script: 
+        - bash .travis/test_python3.bash
+        - bash .travis/build_binary.bash
     - name: "Build using Pyinstaller (Mac OS)"
       if: branch = master OR tag IS present
       os: osx
       osx_image: xcode11.2
       language: shell
       before_install:
-        - python -m pip install --upgrade pip
+        - python3 -m pip install --upgrade pip
       install:
-        - python -m pip install -r requirements.txt
+        - python3 -m pip install -r requirements.txt
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
@@ -38,45 +38,46 @@ jobs:
       language: shell
       env: 
         - BUILD_ID=${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT:0:7}
-        - PATH=/c/Python37:/c/Python37/Scripts:$PATH
+        - PATH=/c/Python39:/c/Python39/Scripts:$PATH
       before_install: 
         - echo $BUILD_ID
-        - choco install python --version 3.7.6
-        - python -m pip install --upgrade pip
+        - choco install python --version 3.9.0
       install:
-        - python -m pip install -r requirements.txt
+        - pip3 install --user -r requirements.txt
       script: 
-#       - bash .travis/test_python3.bash
+        - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
+
     - stage: "Test Binaries"
       name: "Linux-amd64"
       os: linux
       language: shell
       script: 
         - bash .travis/test_binary.bash
-#    - name: "Linux-arm64"
-#      if: branch = master OR tag IS present
-#      arch: arm64
-#      os: linux
-#      language: shell
-#      script: 
-#        - bash .travis/test_binary.bash
+    - name: "Linux-arm64"
+      if: branch = master OR tag IS present
+      arch: arm64
+      os: linux
+      language: shell
+      script: 
+        - bash .travis/test_binary.bash
     - name: "Mac OS X"
       if: branch = master OR tag IS present
       os: osx
       language: shell
       script: 
         - bash .travis/test_binary.bash
-#    - name: "Windows"
-#      if: branch = master OR tag IS present
-#      os: windows
-#      language: shell
-#      script: 
-#       - bash .travis/test_binary.bash
+    - name: "Windows"
+      if: branch = master OR tag IS present
+      os: windows
+      language: shell
+      script: 
+       - bash .travis/test_binary.bash
+
     - stage: "Create Release Draft"
       os: linux
       language: python
-      python: "3.6"
+      python: "3.9"
       if: branch = master AND type = push
       install:
         - pip install awscli

@@ -28,7 +28,10 @@ elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
     echo "Installing via choco..."
     choco install awscli
     AWS_CMD=/c/Program\ Files/Amazon/AWSCLIV2/aws.exe
+    echo ${AWS_CMD}
+    ls -lR ${AWS_CMD}
 fi
+
 
 echo "Testing for AWS cli"
 ${AWS_CMD} --version

@@ -3,22 +3,15 @@ env:
 
 jobs:
   include:
-    - stage: "Linux-amd64"
-      name: "Build using Pyinstaller"
+    - stage: "Test and Build"
+      name: "Build using Pyinstaller (Linux-amd64)"
       os: linux
       language: python
       python: "3.9"
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-    - name: "Linux-amd64"
-      os: linux
-      language: shell
-      script: 
-        - bash .travis/test_binary.bash
-
-    - stage: "Linux-arm64"
-      name: "Build using Pyinstaller"
+    - name: "Build using Pyinstaller (Linux-arm64)"
 #      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
       if: branch = master OR tag IS present
       arch: arm64
@@ -28,17 +21,7 @@ jobs:
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-    - name: "Binary Test"
-#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
-      if: branch = master OR tag IS present
-      arch: arm64
-      os: linux
-      language: shell
-      script: 
-        - bash .travis/test_binary.bash
-
-    - stage: "OSX"
-      name: "Build using Pyinstaller"
+    - name: "Build using Pyinstaller (Mac OS)"
 #      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
       if: branch = master OR tag IS present
       os: osx
@@ -51,23 +34,14 @@ jobs:
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-    - name: "Mac OS X"
-#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
-      if: branch = master OR tag IS present
-      os: osx
-      language: shell
-      script: 
-        - bash .travis/test_binary.bash
-
-    - stage: "Test and Build (Windows)"
-      name: "Build using Pyinstaller (Windows)"
+    - name: "Build using Pyinstaller (Windows)"
       if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
 #      if: branch = master OR tag IS present
       os: windows
       language: shell
       env: 
         - BUILD_ID=${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT:0:7}
-        - PATH=/c/Python39:/c/Python39/Scripts:"/c/Program Files/Amazon/AWSCLIV2":$PATH
+        - PATH=/c/Python39:/c/Python39/Scripts:$PATH
       before_install: 
         - echo $BUILD_ID
         - choco install python --version 3.9.0
@@ -76,6 +50,28 @@ jobs:
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
+
+    - stage: "Test Binaries"
+      name: "Linux-amd64"
+      os: linux
+      language: shell
+      script: 
+        - bash .travis/test_binary.bash
+    - name: "Linux-arm64"
+#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+      if: branch = master OR tag IS present
+      arch: arm64
+      os: linux
+      language: shell
+      script: 
+        - bash .travis/test_binary.bash
+    - name: "Mac OS X"
+#      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
+      if: branch = master OR tag IS present
+      os: osx
+      language: shell
+      script: 
+        - bash .travis/test_binary.bash
     - name: "Windows"
       if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
 #      if: branch = master OR tag IS present
@@ -84,11 +80,10 @@ jobs:
       script: 
        - bash .travis/test_binary.bash
 
-
     - stage: "Create Release Draft"
       os: linux
       language: python
-      python: "3.6"
+      python: "3.9"
       if: branch = master AND type = push
       install:
         - pip install awscli

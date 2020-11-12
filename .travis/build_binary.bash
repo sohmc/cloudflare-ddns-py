@@ -2,6 +2,7 @@
 BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
 DIST_FILE=cloudflare-ddns
 AWSCLI_VERSION=2.0.56
+AWS_PATH=""
 
 mkdir -p ~/.cache/pip/wheels
 
@@ -26,10 +27,11 @@ elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
 elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
     echo "Installing via choco..."
     choco install awscli
+    AWS_PATH="/c/Program Files/Amazon/AWSCLIV2/"
 fi
 
 echo "Testing for AWS cli"
-aws --version
+${AWS_PATH}aws --version
 
 
 echo "Installing pyinstaller"
@@ -47,7 +49,7 @@ fi
 
 if [[ -f ./dist/${DIST_FILE} ]]; then
     cp ./dist/cloudflare-ddns ./dist/${BIN_NAME}
-    aws s3 cp \
+    ${AWS_PATH}aws s3 cp \
         ./dist/${BIN_NAME} \
         s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ \
         --acl public-read

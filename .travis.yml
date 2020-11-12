@@ -3,7 +3,7 @@ env:
 
 jobs:
   include:
-    - stage: "Test and Build"
+    - stage: "Test and Build (Linux-amd64)
       name: "Build using Pyinstaller (Linux-amd64)"
       os: linux
       language: python
@@ -11,7 +11,8 @@ jobs:
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Linux-arm64)"
+    - stage: "Test and Build (Linux-arm64)
+      name: "Build using Pyinstaller (Linux-arm64)"
 #      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
       if: branch = master OR tag IS present
       arch: arm64
@@ -21,7 +22,8 @@ jobs:
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Mac OS)"
+    - stage: "Test and Build (osx)
+      name: "Build using Pyinstaller (Mac OS)"
 #      if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
       if: branch = master OR tag IS present
       os: osx
@@ -34,7 +36,8 @@ jobs:
       script: 
         - bash .travis/test_python3.bash
         - bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Windows)"
+    - stage: "Test and Build (Windows)
+      name: "Build using Pyinstaller (Windows)"
       if: branch = master OR branch = upgrade-aws-cli-v2 OR tag IS present
 #      if: branch = master OR tag IS present
       os: windows

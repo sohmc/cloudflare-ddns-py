@@ -58,8 +58,9 @@ jobs:
           TRAVIS_OS_NAME: linux
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
       
-      - name: Building LINUX Binaries
+      - name: Building MAC OS Binaries
         run: bash .travis/build_binary.bash
+        shell: bash
         if: ${{ matrix.os == 'macos-latest' }}
         env:
           TRAVIS_OS_NAME: osx
@@ -67,6 +68,7 @@ jobs:
 
       - name: Building WINDOWS Binaries
         run: bash .travis/build_binary.bash
+        shell: bash
         if: ${{ matrix.os == 'windows-latest' }}
         env:
           TRAVIS_OS_NAME: windows

@@ -45,3 +45,4 @@ jobs:
           EMAIL: ${{ secrets.CF_EMAIL }}
           TRAVIS_OS_NAME: linux
           SUBDOMAIN: travis
+          ZONE: ${{ secrets.ZONE }}

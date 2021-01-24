@@ -42,6 +42,7 @@ jobs:
           ZONE: ${{ secrets.ZONE }}
   
   build-binaries:
+    needs: raw-testing
     runs-on: [${{ matrix.os }}, ${{ matrix.arch }}]
     strategy:
       matrix:

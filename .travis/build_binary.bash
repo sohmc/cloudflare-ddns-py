@@ -8,33 +8,33 @@ mkdir -p ~/.cache/pip/wheels
 
 set -ev
 
-echo "Installing AWS CLI v. ${AWSCLI_VERSION} for OS ${TRAVIS_OS_NAME} on arch ${TRAVIS_CPU_ARCH}"
+# echo "Installing AWS CLI v. ${AWSCLI_VERSION} for OS ${TRAVIS_OS_NAME} on arch ${TRAVIS_CPU_ARCH}"
 
-if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-    if [[ $TRAVIS_CPU_ARCH == "amd64" ]]; then 
-        DOWNLOAD_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_VERSION}.zip"
-    elif [[ $TRAVIS_CPU_ARCH == "arm64" ]]; then 
-        DOWNLOAD_URL="https://awscli.amazonaws.com/awscli-exe-linux-aarch64-${AWSCLI_VERSION}.zip"
-    fi
+# if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+#     if [[ $TRAVIS_CPU_ARCH == "amd64" ]]; then 
+#         DOWNLOAD_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_VERSION}.zip"
+#     elif [[ $TRAVIS_CPU_ARCH == "arm64" ]]; then 
+#         DOWNLOAD_URL="https://awscli.amazonaws.com/awscli-exe-linux-aarch64-${AWSCLI_VERSION}.zip"
+#     fi
 
-    curl ${DOWNLOAD_URL} -o awscliv2.zip
-    unzip awscliv2.zip
-    sudo ./aws/install
-elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
-    curl "https://awscli.amazonaws.com/AWSCLIV2-${AWSCLI_VERSION}.pkg" \
-        -o "AWSCLIV2.pkg"
-    sudo installer -pkg awscliv2.pkg -target /
-elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
-    echo "Installing via choco..."
-    choco install awscli
-    AWS_CMD="/c/Program Files/Amazon/AWSCLIV2/aws.exe"
-    echo ${AWS_CMD}
-    ls -lR "${AWS_CMD}"
-fi
+#     curl ${DOWNLOAD_URL} -o awscliv2.zip
+#     unzip awscliv2.zip
+#     sudo ./aws/install
+# elif [[ $TRAVIS_OS_NAME == "osx" ]]; then
+#     curl "https://awscli.amazonaws.com/AWSCLIV2-${AWSCLI_VERSION}.pkg" \
+#         -o "AWSCLIV2.pkg"
+#     sudo installer -pkg awscliv2.pkg -target /
+# elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+#     echo "Installing via choco..."
+#     choco install awscli
+#     AWS_CMD="/c/Program Files/Amazon/AWSCLIV2/aws.exe"
+#     echo ${AWS_CMD}
+#     ls -lR "${AWS_CMD}"
+# fi
 
 
-echo "Testing for AWS cli"
-"${AWS_CMD}" --version
+# echo "Testing for AWS cli"
+# "${AWS_CMD}" --version
 
 
 echo "Installing pyinstaller"
@@ -52,9 +52,11 @@ fi
 
 if [[ -f ./dist/${DIST_FILE} ]]; then
     cp ./dist/cloudflare-ddns ./dist/${BIN_NAME}
-    "${AWS_CMD}" s3 cp \
-        ./dist/${BIN_NAME} \
-        s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ \
-        --acl public-read
+    # "${AWS_CMD}" s3 cp \
+    #     ./dist/${BIN_NAME} \
+    #     s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ \
+    #     --acl public-read
 fi
 
+echo Binary copied: 
+ls -l ./dist/${BIN_NAME}

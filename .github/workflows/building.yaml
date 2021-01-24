@@ -16,12 +16,7 @@ on:
 
 jobs:
   raw-testing:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.9]
-
+    runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -45,3 +40,27 @@ jobs:
           TRAVIS_OS_NAME: linux
           SUBDOMAIN: travis
           ZONE: ${{ secrets.ZONE }}
+  
+  build-binaries:
+    runs-on: [${{ matrix.os }}, ${{ matrix.arch }}]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        arch: [x64, ARM, ARM64]
+        python-version: [3.9]
+
+    steps:
+      - name: Building LINUX Binaries
+        run: bash .travis/build_binary.bash
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        env:
+          TRAVIS_OS_NAME: linux
+          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
+      
+      - name: Building WINDOWS Binaries
+        run: bash .travis/build_binary.bash
+        if: ${{ matrix.os == 'windows-latest' }}
+        env:
+          TRAVIS_OS_NAME: windows
+          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
+      

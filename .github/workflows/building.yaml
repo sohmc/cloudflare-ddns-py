@@ -10,7 +10,7 @@ on:
       - main
   release:
     types: published
-  schedule:
+  # schedule:
     # 4am every Saturday
     # - cron: '0 4 * * 6'
 

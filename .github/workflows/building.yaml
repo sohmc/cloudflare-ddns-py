@@ -78,3 +78,13 @@ jobs:
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
       
+      - name: Test ${{ matrix.os }} Binaries
+        run: bash .travis/test_binary.bash
+        env:
+          TRAVIS_OS_NAME: ${{ matrix.os }}
+          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          GLOBAL_API_KEY: ${{ secrets.GLOBAL_API_KEY }}
+          CF_EMAIL: ${{ secrets.CF_EMAIL }}
+          SUBDOMAIN: travis
+          ZONE: ${{ secrets.ZONE }}

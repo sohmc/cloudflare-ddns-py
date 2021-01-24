@@ -1,7 +1,7 @@
 #!/bin/bash
 BIN_NAME=./dist/cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
 
-if [[ $TRAVIS_OS_NAME == "windows" ]]; then
+if [[ $TRAVIS_OS_NAME == "windows-latest" ]]; then
     BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.exe
 fi
 

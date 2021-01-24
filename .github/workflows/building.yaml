@@ -38,7 +38,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi      
 
       - name: Test Python Script
-        run: bash ./travis/test_python3.bash
+        run: bash .travis/test_python3.bash
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
           GLOBAL_API_KEY: ${{ secrets.GLOBAL_API_KEY }}

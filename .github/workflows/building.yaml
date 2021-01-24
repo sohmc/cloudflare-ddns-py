@@ -17,6 +17,10 @@ on:
 jobs:
   raw-testing:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -51,26 +55,23 @@ jobs:
         python-version: [3.9]
 
     steps:
-      - name: Building LINUX Binaries
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi      
+
+      - name: Building ${{ matrix.os }} Binaries
         run: bash .travis/build_binary.bash
         if: ${{ matrix.os == 'ubuntu-latest' }}
         env:
-          TRAVIS_OS_NAME: linux
-          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
-      
-      - name: Building MAC OS Binaries
-        run: bash .travis/build_binary.bash
-        shell: bash
-        if: ${{ matrix.os == 'macos-latest' }}
-        env:
-          TRAVIS_OS_NAME: osx
-          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
-
-      - name: Building WINDOWS Binaries
-        run: bash .travis/build_binary.bash
-        shell: bash
-        if: ${{ matrix.os == 'windows-latest' }}
-        env:
-          TRAVIS_OS_NAME: windows
+          TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
       

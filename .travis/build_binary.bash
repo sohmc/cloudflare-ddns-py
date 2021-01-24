@@ -38,14 +38,14 @@ set -ev
 
 
 echo "Installing pyinstaller"
-pip3 install pyinstaller
+pip install pyinstaller
 
 echo chowning pip wheels directory
 chown -Rv $USER:$GROUP ~/.cache/pip/wheels
 
 pyinstaller --log-level=DEBUG --onefile ./cloudflare-ddns.py
 
-if [[ $TRAVIS_OS_NAME == "windows" ]]; then
+if [[ $TRAVIS_OS_NAME == "windows-latest" ]]; then
     DIST_FILE=cloudflare-ddns.exe
     BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.exe
 fi

@@ -1,0 +1,46 @@
+name: Cloudflare DDNS
+
+on: 
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - moving-to-github-actions
+      - master
+      - main
+  release:
+    types: published
+  schedule:
+    # 4am every Saturday
+    # - cron: '0 4 * * 6'
+
+jobs:
+  raw-testing:
+    runs-on: ${{ matrix-os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.9]
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi      
+
+      - name: Test Python Script
+        run: bash ./travis/test_python3.bash
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          GLOBAL_API_KEY: ${{ secrets.GLOBAL_API_KEY }}
+          EMAIL: ${{ secrets.CF_EMAIL }}
+          TRAVIS_OS_NAME: linux

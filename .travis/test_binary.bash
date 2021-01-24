@@ -1,9 +1,9 @@
 #!/bin/bash
 BIN_NAME=./dist/cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
 
-# if [[ $TRAVIS_OS_NAME == "windows" ]]; then
-#     BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.exe
-# fi
+if [[ $TRAVIS_OS_NAME == "windows" ]]; then
+    BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.exe
+fi
 
 # S3_URI=https://s3.amazonaws.com/${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/${BIN_NAME}
 

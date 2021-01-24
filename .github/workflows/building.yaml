@@ -16,7 +16,7 @@ on:
 
 jobs:
   raw-testing:
-    runs-on: ${{ matrix-os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]

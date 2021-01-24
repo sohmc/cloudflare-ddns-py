@@ -58,6 +58,8 @@ jobs:
         arch: [amd64]
         python-version: [3.9]
 
+    if: ${{ github.event_name == "pull_request" }}
+
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -88,3 +90,13 @@ jobs:
           CF_EMAIL: ${{ secrets.CF_EMAIL }}
           SUBDOMAIN: travis
           ZONE: ${{ secrets.ZONE }}
+
+      - name: Create Release Draft
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: More to come.
+          draft: true

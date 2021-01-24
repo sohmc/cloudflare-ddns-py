@@ -52,10 +52,6 @@ fi
 
 if [[ -f ./dist/${DIST_FILE} ]]; then
     cp ./dist/cloudflare-ddns ./dist/${BIN_NAME}
-    # "${AWS_CMD}" s3 cp \
-    #     ./dist/${BIN_NAME} \
-    #     s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ \
-    #     --acl public-read
 fi
 
 echo Binary copied: 

@@ -1,5 +1,5 @@
 #!/bin/bash
-BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
+BIN_NAME=./dist/cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.bin
 
 # if [[ $TRAVIS_OS_NAME == "windows" ]]; then
 #     BIN_NAME=cloudflare-ddns-${TRAVIS_OS_NAME}-${TRAVIS_CPU_ARCH}.exe
@@ -22,7 +22,7 @@ echo "Building template..."
 bash .travis/create_template.bash
 
 echo "Running script..."
-./${BIN_NAME} -f -c .travis/cf_ddns.conf
+${BIN_NAME} -f -c .travis/cf_ddns.conf
 
 
 echo "Global API Key Test"
@@ -33,4 +33,4 @@ echo "Building template..."
 bash .travis/create_template.bash
 
 echo "Running script..."
-./${BIN_NAME} -f -c .travis/cf_ddns.conf
+${BIN_NAME} -f -c .travis/cf_ddns.conf

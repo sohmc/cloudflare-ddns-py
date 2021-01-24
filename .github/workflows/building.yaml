@@ -43,11 +43,11 @@ jobs:
   
   build-binaries:
     needs: raw-testing
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        arch: [x64]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        arch: [amd64]
         python-version: [3.9]
 
     steps:
@@ -58,10 +58,17 @@ jobs:
           TRAVIS_OS_NAME: linux
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
       
-      # - name: Building WINDOWS Binaries
-      #   run: bash .travis/build_binary.bash
-      #   if: ${{ matrix.os == 'windows-latest' }}
-      #   env:
-      #     TRAVIS_OS_NAME: windows
-      #     TRAVIS_CPU_ARCH: ${{ matrix.arch }}
+      - name: Building LINUX Binaries
+        run: bash .travis/build_binary.bash
+        if: ${{ matrix.os == 'macos-latest' }}
+        env:
+          TRAVIS_OS_NAME: osx
+          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
+
+      - name: Building WINDOWS Binaries
+        run: bash .travis/build_binary.bash
+        if: ${{ matrix.os == 'windows-latest' }}
+        env:
+          TRAVIS_OS_NAME: windows
+          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
       

@@ -44,3 +44,4 @@ jobs:
           GLOBAL_API_KEY: ${{ secrets.GLOBAL_API_KEY }}
           EMAIL: ${{ secrets.CF_EMAIL }}
           TRAVIS_OS_NAME: linux
+          SUBDOMAIN: travis

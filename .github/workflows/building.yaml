@@ -73,13 +73,14 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi      
 
-      - name: Building ${{ matrix.os }} Binaries
+      - name: Building ${{ matrix.os }} Binary
+        id: build_binary
         run: bash .travis/build_binary.bash
         env:
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
       
-      - name: Test ${{ matrix.os }} Binaries
+      - name: Test ${{ matrix.os }} Binary
         run: bash .travis/test_binary.bash
         env:
           TRAVIS_OS_NAME: ${{ matrix.os }}
@@ -90,12 +91,45 @@ jobs:
           SUBDOMAIN: travis
           ZONE: ${{ secrets.ZONE }}
 
+      - name: Upload ${{ matrix.os }} Binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}-${{ matrix.arch }}
+          path: ./dist/${{ steps.build_binary.outputs.BIN_NAME }}
+
+
+  create-release-draft:
+    if: github.event_name == 'pull_request'
+    needs: build-binaries
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        arch: [amd64]
+
+    steps:
+      - name: Download binaries
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ matrix.os }}-${{ matrix.arch }}
+          path: ./release/
+
       - name: Create Release Draft
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.run_id }}
+          release_name: Release ${{ github.run_id }}-${{ github.sha }}
           body: More to come.
           draft: true
+      
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release/

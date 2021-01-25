@@ -56,3 +56,5 @@ fi
 
 echo Binary copied: 
 ls -l ./dist/${BIN_NAME}
+
+echo "::set-output name=BIN_NAME::${BIN_NAME}"

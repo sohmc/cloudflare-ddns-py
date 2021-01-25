@@ -121,9 +121,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.run_id }}
-          release_name: Release ${{ github.event.number }}-${{ github.sha }}
-          body: Release for PR #${{ github.event.number }} via commit ${{ github.sha }}
+          tag_name: ${{ github.event.number }}
+          release_name: Release ${{ github.event.number }}-${{ github.run_id }}.${{ github.sha }}
+          body: Release for PR #${{ github.event.number }} on Actions run ${{ github.run_id }} via commit ${{ github.sha }}
           draft: true
       
       - name: Upload Release Assets

@@ -132,7 +132,7 @@ jobs:
         run: bash .travis/install_aws_cli.bash
         env:
           TRAVIS_OS_NAME: linux
-          TRAVIS_CPU_ARCH: 
+          TRAVIS_CPU_ARCH: amd64
 
       - name: Download from AWS S3 Bucket
         run: |

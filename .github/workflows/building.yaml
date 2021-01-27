@@ -122,11 +122,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # - name: Download binaries
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: ${{ matrix.os }}-${{ matrix.arch }}
-      #     path: ./release/
+      - name: Check out the repo
+        uses: actions/checkout@v2
 
       - name: Install AWS CLI
         run: bash .travis/install_aws_cli.bash

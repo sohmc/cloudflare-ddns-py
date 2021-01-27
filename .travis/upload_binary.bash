@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -ev
+
 BUILD_ID=GITHUB_RUN_NUMBER
 
 echo "s3 cp from ./dist/${BIN_NAME} to"

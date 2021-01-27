@@ -134,8 +134,15 @@ jobs:
       - name: Download from AWS S3 Bucket
         run: |
           mkdir binaries
-          aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${GITHUB_RUN_NUMBER}/ ./binaries/ --recursive
+          aws s3 cp s3://${AWS_DEPLOY_BUCKET}/cloudflare_ddns/${GITHUB_RUN_NUMBER}/ ./binaries/ --recursive
           ls -lR ./binaries
+        env: 
+          TRAVIS_OS_NAME: ${{ matrix.os }}
+          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
 
       - name: Create Release Draft
         id: create_release

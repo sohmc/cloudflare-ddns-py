@@ -1,6 +1,6 @@
 #!/bin/bash
 AWS_CMD=/usr/local/bin/aws
-BUILD_ID=GITHUB_RUN_NUMBER
+BUILD_ID=${GITHUB_RUN_NUMBER}
 
 set -ev
 

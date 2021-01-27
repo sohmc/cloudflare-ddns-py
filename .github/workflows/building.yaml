@@ -107,7 +107,6 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
-          BUILD_ID: ${{ GITHUB_RUN_NUMBER }}
 
       # - name: Upload ${{ matrix.os }} Binary to Github Artifacts
       #   uses: actions/upload-artifact@v2
@@ -138,10 +137,8 @@ jobs:
       - name: Download from AWS S3 Bucket
         run: |
           mkdir binaries
-          aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ ./binaries/ --recursive
+          aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${GITHUB_RUN_NUMBER}/ ./binaries/ --recursive
           ls -lR ./binaries
-        env:
-          BUILD_ID: ${{ GITHUB_RUN_NUMBER }}
 
       - name: Create Release Draft
         id: create_release
@@ -161,4 +158,3 @@ jobs:
         with:
           files: |
             ./binaries/*
-            

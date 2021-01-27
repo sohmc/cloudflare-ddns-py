@@ -91,11 +91,29 @@ jobs:
           SUBDOMAIN: travis
           ZONE: ${{ secrets.ZONE }}
 
-      - name: Upload ${{ matrix.os }} Binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.os }}-${{ matrix.arch }}
-          path: ./dist/${{ steps.build_binary.outputs.BIN_NAME }}
+      - name: Install AWS CLI
+        run: bash .travis/install_aws_cli.bash
+        env:
+          TRAVIS_OS_NAME: ${{ matrix.os }}
+          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
+
+      - name: Upload ${{ matrix.os }} Binary to S3
+        run: bash .travis/upload_binary.bash
+        env:
+          TRAVIS_OS_NAME: ${{ matrix.os }}
+          TRAVIS_CPU_ARCH: ${{ matrix.arch }}
+          BIN_NAME: ${{ steps.build_binary.outputs.BIN_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
+          BUILD_ID: ${{ GITHUB_RUN_NUMBER }}
+
+      # - name: Upload ${{ matrix.os }} Binary to Github Artifacts
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: ${{ matrix.os }}-${{ matrix.arch }}
+      #     path: ./dist/${{ steps.build_binary.outputs.BIN_NAME }}
 
 
   create-release-draft:
@@ -103,17 +121,27 @@ jobs:
     needs: build-binaries
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        arch: [amd64]
 
     steps:
-      - name: Download binaries
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ matrix.os }}-${{ matrix.arch }}
-          path: ./release/
+      # - name: Download binaries
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: ${{ matrix.os }}-${{ matrix.arch }}
+      #     path: ./release/
+
+      - name: Install AWS CLI
+        run: bash .travis/install_aws_cli.bash
+        env:
+          TRAVIS_OS_NAME: linux
+          TRAVIS_CPU_ARCH: 
+
+      - name: Download from AWS S3 Bucket
+        run: |
+          mkdir binaries
+          aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ ./binaries/ --recursive
+          ls -lR ./binaries
+        env:
+          BUILD_ID: ${{ GITHUB_RUN_NUMBER }}
 
       - name: Create Release Draft
         id: create_release
@@ -127,9 +155,10 @@ jobs:
           draft: true
       
       - name: Upload Release Assets
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/*
+          files: |
+            ./binaries/*
+            

@@ -145,22 +145,15 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
 
-      - name: Create Release Draft
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.number }}
-          release_name: Release ${{ github.event.number }}-${{ github.run_id }}.${{ github.sha }}
-          body: Release for PR #${{ github.event.number }} on Actions run ${{ github.run_id }} via commit ${{ github.sha }}
-          draft: true
-      
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.event.number }}
+          name: Release ${{ github.event.number }}-${{ github.run_id }}.${{ github.sha }}
+          body: Release for PR ${{ github.event.number }} on Actions run ${{ github.run_id }} via commit ${{ github.sha }}
+          draft: true
+          fail_on_unmatched_files: true
           files: |
             ./binaries/*

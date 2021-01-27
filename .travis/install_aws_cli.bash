@@ -22,7 +22,7 @@ elif [[ $TRAVIS_OS_NAME == "macos-latest" ]]; then
     curl "https://awscli.amazonaws.com/AWSCLIV2-${AWSCLI_VERSION}.pkg" \
         -o "AWSCLIV2.pkg"
     sudo installer -pkg awscliv2.pkg -target /
-elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
+elif [[ $TRAVIS_OS_NAME == "windows-latest" ]]; then
     echo "Installing via choco..."
     choco install awscli
     AWS_CMD="/c/Program Files/Amazon/AWSCLIV2/aws.exe"

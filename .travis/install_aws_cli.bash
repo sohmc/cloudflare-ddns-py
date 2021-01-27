@@ -17,7 +17,8 @@ if [[ $TRAVIS_OS_NAME == "linux-latest" ]]; then
 
     curl ${DOWNLOAD_URL} -o awscliv2.zip
     unzip awscliv2.zip
-    sudo ./aws/install
+    sudo ./aws/install --install-dir ./aws-cli --bin-dir ./bin
+    AWS_CMD=./bin/aws
 elif [[ $TRAVIS_OS_NAME == "macos-latest" ]]; then
     curl "https://awscli.amazonaws.com/AWSCLIV2-${AWSCLI_VERSION}.pkg" \
         -o "AWSCLIV2.pkg"

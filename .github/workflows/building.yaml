@@ -50,7 +50,7 @@ jobs:
           ZONE: ${{ secrets.ZONE }}
   
   build-binaries:
-    if: github.event_name == 'pull_request'
+    if: startsWith(github.ref, 'refs/tags/')
     needs: raw-testing
     runs-on: ${{ matrix.os }}
     strategy:
@@ -116,7 +116,7 @@ jobs:
 
 
   create-release-draft:
-    if: github.event_name == 'pull_request'
+    if: startsWith(github.ref, 'refs/tags/')
     needs: build-binaries
 
     runs-on: ubuntu-latest
@@ -136,6 +136,7 @@ jobs:
           mkdir binaries
           aws s3 cp s3://${AWS_DEPLOY_BUCKET}/cloudflare_ddns/${GITHUB_RUN_NUMBER}/ ./binaries/ --recursive
           ls -lR ./binaries
+          git tag ${{ github.ref }}
         env: 
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
@@ -150,7 +151,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.number }}
+          tag_name: ${{ github.ref }}
           release_name: Release ${{ github.event.number }}-${{ github.run_id }}.${{ github.sha }}
           body: Release for PR #${{ github.event.number }} on Actions run ${{ github.run_id }} via commit ${{ github.sha }}
           draft: true

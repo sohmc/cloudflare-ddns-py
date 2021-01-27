@@ -1,6 +1,6 @@
 #!/bin/bash
 AWSCLI_VERSION=2.0.56
-AWS_CMD=aws
+AWS_CMD=/usr/local/bin/aws
 
 mkdir -p ~/.cache/pip/wheels
 
@@ -27,8 +27,9 @@ elif [[ $TRAVIS_OS_NAME == "windows" ]]; then
     choco install awscli
     AWS_CMD="/c/Program Files/Amazon/AWSCLIV2/aws.exe"
     echo ${AWS_CMD}
-    ls -lR "${AWS_CMD}"
 fi
+
+ls -lR "${AWS_CMD}"
 
 echo "Testing for AWS cli"
 "${AWS_CMD}" --version

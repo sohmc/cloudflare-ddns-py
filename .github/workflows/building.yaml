@@ -20,7 +20,6 @@ defaults:
 
 jobs:
   raw-testing:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     strategy:
       matrix:

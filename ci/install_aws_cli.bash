@@ -8,7 +8,7 @@ set -ev
 
 echo "Installing AWS CLI v. ${AWSCLI_VERSION} for OS ${TRAVIS_OS_NAME} on arch ${TRAVIS_CPU_ARCH}"
 
-if [[ $TRAVIS_OS_NAME == "linux-latest" ]]; then
+if [[ $TRAVIS_OS_NAME == "linux-latest" ]] || [[ $TRAVIS_OS_NAME == "linux" ]]; then
     if [[ $TRAVIS_CPU_ARCH == "amd64" ]]; then 
         DOWNLOAD_URL="https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWSCLI_VERSION}.zip"
     elif [[ $TRAVIS_CPU_ARCH == "arm64" ]]; then 

@@ -8,7 +8,7 @@ if [[ $TRAVIS_OS_NAME == "windows-latest" ]]; then
     AWS_CMD="/c/Program Files/Amazon/AWSCLIV2/aws.exe"
     echo ${AWS_CMD}
     ls -lR "${AWS_CMD}"
-elif [[ $TRAVIS_OS_NAME == "linux-latest" ]]; then
+elif [[ $TRAVIS_OS_NAME == "linux-latest" ]] || [[ $TRAVIS_OS_NAME == "linux" ]]; then
     AWS_CMD=./bin/aws
 fi
 

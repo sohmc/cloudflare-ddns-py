@@ -3,101 +3,25 @@ env:
 
 jobs:
   include:
-    - stage: "Test and Build"
-      name: "Build using Pyinstaller (Linux-amd64)"
-      os: linux
-      language: python
-      python: "3.9"
-      script: 
-        - bash .travis/test_python3.bash
-        - bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Linux-arm64)"
-      if: branch = master OR tag IS present
+    - stage: Build and test arm binary
+      name: "Build using Pyinstaller (Linux-arm64)"
+      if: branch = main OR tag IS present
       arch: arm64
       os: linux
       language: python
       python: "3.9"
       script: 
-        - bash .travis/test_python3.bash
-        - bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Mac OS)"
-      if: branch = master OR tag IS present
-      os: osx
-      osx_image: xcode11.2
-      language: shell
-      before_install:
-        - python3 -m pip install --upgrade pip
-      install:
-        - python3 -m pip install -r requirements.txt
-      script: 
-        - bash .travis/test_python3.bash
-        - bash .travis/build_binary.bash
-    - name: "Build using Pyinstaller (Windows)"
-      if: branch = master OR tag IS present
-      os: windows
-      language: shell
-      env: 
-        - BUILD_ID=${TRAVIS_BUILD_NUMBER}-${TRAVIS_COMMIT:0:7}
-        - PATH=/c/Python39:/c/Python39/Scripts:$PATH
-      before_install: 
-        - echo $BUILD_ID
-        - choco install python --version 3.9.0
-      install:
-        - pip3 install --user -r requirements.txt
-      script: 
-        - bash .travis/test_python3.bash
-        - bash .travis/build_binary.bash
-
-    - stage: "Test Binaries"
-      name: "Linux-amd64"
+        - bash ci/build_binary.bash
+        - bash ci/test_binary.bash
+        - bash ci/install_aws_cli
+        - bash ci/upload_binary.bash        
+    
+    - stage: Deployment
+      name: "Set git tag"
       os: linux
-      language: shell
-      script: 
-        - bash .travis/test_binary.bash
-    - name: "Linux-arm64"
-      if: branch = master OR tag IS present
       arch: arm64
-      os: linux
       language: shell
-      script: 
-        - bash .travis/test_binary.bash
-    - name: "Mac OS X"
-      if: branch = master OR tag IS present
-      os: osx
-      language: shell
-      script: 
-        - bash .travis/test_binary.bash
-    - name: "Windows"
-      if: branch = master OR tag IS present
-      os: windows
-      language: shell
-      script: 
-       - bash .travis/test_binary.bash
-
-    - stage: "Create Release Draft"
-      os: linux
-      language: python
-      python: "3.9"
-      if: branch = master AND type = push
-      install:
-        - pip install awscli
       script:
-        - mkdir build
-        - aws s3 cp s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/${BUILD_ID}/ ./build/ --recursive
-        - ls -lR ./build
-        - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-        - echo ${TRAVIS_TAG}
-        - git tag $TRAVIS_TAG
-      deploy:
-        provider: releases
-        token: $GITHUB_API_TOKEN
-        file_glob: true
-        file: ./build/*
-        cleanup: false
-        draft: true
-        edge: true
-        on:
-          branch: master
-          tags: true
-      after_deploy:
-        - aws s3 rm s3://${AWS_TRAVIS_DEPLOY_BUCKET}/cloudflare_ddns/ --recursive
+        - git tag ${GIT_TAG}
+        - git push origin ${GIT_TAG}
+        

@@ -92,7 +92,7 @@ jobs:
           ZONE: ${{ secrets.ZONE }}
 
       - name: Create Tag
-        if: github.ref == refs/heads/main
+        if: github.ref == 'refs/heads/main'
         uses: anothrNick/github-tag-action@1.26.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -8,9 +8,9 @@ on:
       - moving-to-github-actions
       - master
       - main
-  # schedule:
+  schedule:
     # 4am every Saturday
-    # - cron: '0 4 * * 6'
+    - cron: '0 4 * * 6'
 
 defaults:
   run:

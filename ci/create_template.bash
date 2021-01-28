@@ -2,7 +2,7 @@
 TEMP_FILE=./cf_ddns.conf
 SED_OPTIONS='-i'
 
-cd .travis/
+cd ci/
 
 if [[ -f ./cf_ddns.conf ]]; then
     rm ${TEMP_FILE}

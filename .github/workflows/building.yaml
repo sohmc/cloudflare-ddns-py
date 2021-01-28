@@ -8,8 +8,6 @@ on:
       - moving-to-github-actions
       - master
       - main
-  release:
-    types: published
   # schedule:
     # 4am every Saturday
     # - cron: '0 4 * * 6'
@@ -50,7 +48,7 @@ jobs:
           ZONE: ${{ secrets.ZONE }}
   
   build-binaries:
-    if: github.event_name == 'pull_request'
+    if: (github.event_name == 'pull_request') || startsWith(github.ref, 'refs/tags/')
     needs: raw-testing
     runs-on: ${{ matrix.os }}
     strategy:
@@ -62,6 +60,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
       
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -91,13 +91,23 @@ jobs:
           SUBDOMAIN: travis
           ZONE: ${{ secrets.ZONE }}
 
+      - name: Create Tag
+        if: github.ref == refs/heads/main
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          RELEASE_BRANCHES: main,master
+
       - name: Install AWS CLI
+        if: startsWith(github.ref, 'refs/tags/')
         run: bash .travis/install_aws_cli.bash
         env:
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
 
       - name: Upload ${{ matrix.os }} Binary to S3
+        if: startsWith(github.ref, 'refs/tags/')
         run: bash .travis/upload_binary.bash
         env:
           TRAVIS_OS_NAME: ${{ matrix.os }}
@@ -108,17 +118,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
 
-      # - name: Upload ${{ matrix.os }} Binary to Github Artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: ${{ matrix.os }}-${{ matrix.arch }}
-      #     path: ./dist/${{ steps.build_binary.outputs.BIN_NAME }}
-
-
   create-release-draft:
-    if: github.event_name == 'pull_request'
+    if: startsWith(github.ref, 'refs/tags/')
     needs: build-binaries
-
     runs-on: ubuntu-latest
 
     steps:
@@ -136,7 +138,6 @@ jobs:
           mkdir binaries
           aws s3 cp s3://${AWS_DEPLOY_BUCKET}/cloudflare_ddns/${GITHUB_RUN_NUMBER}/ ./binaries/ --recursive --quiet
           ls -lR ./binaries
-          git tag ${{ github.event.number }}
         env: 
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
@@ -145,15 +146,14 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEPLOY_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
 
-      - name: Upload Release Assets
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.number }}
-          name: Release ${{ github.event.number }}-${{ github.run_id }}.${{ github.sha }}
+          tag_name: ${{ needs.build-binaries.outputs.new_tag }}
+          name: Release ${{ needs.build-binaries.outputs.new_tag }}
           body: Release for PR ${{ github.event.number }} on Actions run ${{ github.run_id }} via commit ${{ github.sha }}
           draft: true
-          fail_on_unmatched_files: true
           files: |
             ./binaries/*

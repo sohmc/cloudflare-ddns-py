@@ -1,8 +1,13 @@
 # cloudflare-ddns-py 
 
-![Cloudflare DDNS](https://github.com/sohmc/cloudflare-ddns-py/workflows/Cloudflare%20DDNS/badge.svg)
-
 **Current Version: 1.2 (Released 2020-Nov-11)**
+
+Build Type|Processor|Status
+----------|---------|------
+Linux, Windows, Mac|amd64|![Cloudflare DDNS](https://github.com/sohmc/cloudflare-ddns-py/workflows/Cloudflare%20DDNS/badge.svg)
+Linux|arm64|[![Build Status](https://travis-ci.com/sohmc/cloudflare-ddns-py.svg?branch=main)](https://travis-ci.com/sohmc/cloudflare-ddns-py)
+
+All builds are tested weekly.
 
 Got a [CloudFlare](https://www.cloudflare.com)-managed domain that you
 want to update with your dynamically changing IP address?

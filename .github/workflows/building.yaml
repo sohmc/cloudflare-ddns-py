@@ -38,7 +38,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi      
 
       - name: Test Python Script
-        run: bash .travis/test_python3.bash
+        run: bash ci/test_python3.bash
         env:
           API_TOKEN: ${{ secrets.API_TOKEN }}
           GLOBAL_API_KEY: ${{ secrets.GLOBAL_API_KEY }}
@@ -75,13 +75,13 @@ jobs:
 
       - name: Building ${{ matrix.os }} Binary
         id: build_binary
-        run: bash .travis/build_binary.bash
+        run: bash ci/build_binary.bash
         env:
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
       
       - name: Test ${{ matrix.os }} Binary
-        run: bash .travis/test_binary.bash
+        run: bash ci/test_binary.bash
         env:
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
@@ -101,14 +101,14 @@ jobs:
 
       - name: Install AWS CLI
         if: startsWith(github.ref, 'refs/tags/')
-        run: bash .travis/install_aws_cli.bash
+        run: bash ci/install_aws_cli.bash
         env:
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
 
       - name: Upload ${{ matrix.os }} Binary to S3
         if: startsWith(github.ref, 'refs/tags/')
-        run: bash .travis/upload_binary.bash
+        run: bash ci/upload_binary.bash
         env:
           TRAVIS_OS_NAME: ${{ matrix.os }}
           TRAVIS_CPU_ARCH: ${{ matrix.arch }}
@@ -128,7 +128,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install AWS CLI
-        run: bash .travis/install_aws_cli.bash
+        run: bash ci/install_aws_cli.bash
         env:
           TRAVIS_OS_NAME: linux
           TRAVIS_CPU_ARCH: amd64

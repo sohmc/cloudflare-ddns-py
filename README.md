@@ -7,7 +7,13 @@ Build Type|Processor|Status
 Linux, Windows, Mac|amd64|![Cloudflare DDNS](https://github.com/sohmc/cloudflare-ddns-py/workflows/Cloudflare%20DDNS/badge.svg)
 Linux|arm64|[![Build Status](https://travis-ci.com/sohmc/cloudflare-ddns-py.svg?branch=main)](https://travis-ci.com/sohmc/cloudflare-ddns-py)
 
-All builds are tested weekly.
+(arm64 builds have not yet been tested due to Travis CI implimenting 
+a new pricing model without giving Open-Source developers credits to 
+build.  **Be advised that arm64 builds will move to Github as soon as 
+it's supported.**)
+
+Core source is tested weekly.  Binaries are only tested during 
+releases.
 
 Got a [CloudFlare](https://www.cloudflare.com)-managed domain that you
 want to update with your dynamically changing IP address?
@@ -43,16 +49,13 @@ following rights:
 ## Usage
 ```
 usage: cloudflare-ddns.py [-f] [-c <config_file>]
-
--f                   Force IP address update, even if the record is the same
-                     as the current IP address.
-
--c <config_file>     Run using the config file, if provided.  If the config
-                     file is empty or does not exist, the config will run 
-                     and save values in the specified file.  The script will
-                     run without arguments when the config file is found 
-                     at ~/.config/.cf_ddns.conf
 ```
+
+Parameter|description
+---------|-----------
+`-f`|Force IP address update, even if the record is the same as the current IP address.
+`-c <config_file>`|Run using the config file, if provided.  If the config file is empty or does not exist, the config will run and save values in the specified file.  The script will run without arguments when the config file is found at ~/.config/.cf_ddns.conf
+
 
 ## License
 

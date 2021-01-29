@@ -8,6 +8,8 @@ on:
       - moving-to-github-actions
       - master
       - main
+    paths-ignore:
+      - 'README.md'
   schedule:
     # 4am every Saturday
     - cron: '0 4 * * 6'

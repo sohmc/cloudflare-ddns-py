@@ -2,13 +2,13 @@
 TEMP_FILE=./cf_ddns.conf
 SED_OPTIONS='-i'
 
-cd .travis/
+cd ci/
 
 if [[ -f ./cf_ddns.conf ]]; then
     rm ${TEMP_FILE}
 fi
 
-if [[ ${TRAVIS_OS_NAME} == "osx" ]]; then
+if [[ ${TRAVIS_OS_NAME} == "macos-latest" ]]; then
     echo "Setting sed options for osx"
     SED_OPTIONS='-i "" -e '
 fi

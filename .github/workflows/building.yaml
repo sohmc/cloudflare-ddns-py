@@ -96,13 +96,13 @@ jobs:
       #   Until Github Actions supports ARM runners,
       #   the tag will be created by Travis, which will then
       #   trigger all other jobs here.
-      # - name: Create Tag
-      #   if: github.ref == 'refs/heads/main'
-      #   uses: anothrNick/github-tag-action@1.26.0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     WITH_V: true
-      #     RELEASE_BRANCHES: main,master
+      - name: Create Tag
+        if: github.ref == 'refs/heads/main'
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          RELEASE_BRANCHES: main,master
 
       - name: Install AWS CLI
         if: startsWith(github.ref, 'refs/tags/')
